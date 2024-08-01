@@ -4,14 +4,18 @@
 
 static void
 draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
-  GdkRGBA color;
+  // GdkRGBA color;
 
-  cairo_arc(cr, width / 2.0, height / 2.0, MIN (width, height) / 2.0, 0, 2 * G_PI);
+  // cairo_arc(cr, width / 2.0, height / 2.0, MIN (width, height) / 2.0, 0, 2 * G_PI);
 
-  gtk_widget_get_color(GTK_WIDGET(area), &color);
-  gdk_cairo_set_source_rgba(cr, &color);
+  // gtk_widget_get_color(GTK_WIDGET(area), &color);
+  // gdk_cairo_set_source_rgba(cr, &color);
 
-  cairo_fill(cr);
+  GdkPixbuf *pix;
+  pix = gdk_pixbuf_new_from_file("./Test_Images/TestImage2.png", NULL);
+  gdk_cairo_set_source_pixbuf(cr, pix, 0,0);
+
+  cairo_paint(cr);
 }
 
 static void activate(GtkApplication *app, gpointer user_data){

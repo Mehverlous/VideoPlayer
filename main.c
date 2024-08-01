@@ -1,57 +1,21 @@
+#include <cairo.h>
 #include <gtk/gtk.h>
-#include <time.h>
-#include <unistd.h>
-
-struct Frame{
-    GtkWidget *image;
-};
-
-// static void carousel(GtkWidget *window, GtkWidget *screen){
-//     GtkWidget *image1 = gtk_picture_new_for_filename("Test_Images/TestImage1.png");
-//     GtkWidget *image2 = gtk_picture_new_for_filename("Test_Images/TestImage2.png");
-//     GtkWidget *image3 = gtk_picture_new_for_filename("Test_Images/TestImage3.png");
-//     GtkWidget *image4 = gtk_picture_new_for_filename("Test_Images/TestImage4.png");
-//     GtkWidget *image5 = gtk_picture_new_for_filename("Test_Images/TestImage5.png");
-
-//     struct Frame frames[5];
-//     frames[0].image = image1;
-//     frames[1].image = image2;
-//     frames[2].image = image3;
-//     frames[3].image = image4;
-//     frames[4].image = image5;
-
-//     GtkWidget *currentImage = frames[0].image;
-
-//     gtk_box_append(GTK_BOX(screen), currentImage);
-
-//     gtk_window_present(GTK_WINDOW(window));
-
-//     int i = 0;
-
-//     // while(1){
-//     //     if(i == 4){
-//     //         i = 0;
-//     //     }
-
-//     //     sleep(1);
-
-//     //     currentImage = frames[i].image;
-//     //     printf("Changed to image: %d\n", i+1);
-
-//     //     i++;
-//     // }
-// }
+#include <stdlib.h>
 
 static void
 draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
-  GdkRGBA color;
+  // GdkRGBA color;
 
-  cairo_arc(cr, width / 2.0, height / 2.0, MIN (width, height) / 2.0, 0, 2 * G_PI);
+  // cairo_arc(cr, width / 2.0, height / 2.0, MIN (width, height) / 2.0, 0, 2 * G_PI);
 
-  gtk_widget_get_color(GTK_WIDGET(area), &color);
-  gdk_cairo_set_source_rgba(cr, &color);
+  // gtk_widget_get_color(GTK_WIDGET(area), &color);
+  // gdk_cairo_set_source_rgba(cr, &color);
 
-  cairo_fill(cr);
+  GdkPixbuf *pix;
+  pix = gdk_pixbuf_new_from_file("./Test_Images/TestImage2.png", NULL);
+  gdk_cairo_set_source_pixbuf(cr, pix, 0,0);
+
+  cairo_paint(cr);
 }
 
 static void activate(GtkApplication *app, gpointer user_data){
@@ -59,7 +23,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 
     //initializing the window
     window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Main Window");
+    gtk_window_set_title(GTK_WINDOW(window), "Testing Carousel");
     gtk_window_set_default_size(GTK_WINDOW(window), 1080, 720);
 
     //creating a container to store the main widgets (drawing area and buttons)
@@ -87,14 +51,14 @@ static void activate(GtkApplication *app, gpointer user_data){
     gtk_window_present(GTK_WINDOW(window));
 }
 
-int main(int argc, char **argv){
-    GtkApplication *app;
-    int status;
+int main (int argc,char **argv){
+  GtkApplication *app;
+  int status;
 
-    app = gtk_application_new("main.gtk.video_player", G_APPLICATION_DEFAULT_FLAGS);
-    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-    status = g_application_run(G_APPLICATION(app), argc, argv);
-    g_object_unref(app);
+  app = gtk_application_new("org.gtk.demo02", G_APPLICATION_DEFAULT_FLAGS);
+  g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+  status = g_application_run(G_APPLICATION(app), argc, argv);
+  g_object_unref(app);
 
-    return status;
+  return status;
 }
