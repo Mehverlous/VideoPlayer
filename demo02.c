@@ -1,6 +1,7 @@
 #include <cairo.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include <time.h>
 
 int counter = 1;
 gint timer;
