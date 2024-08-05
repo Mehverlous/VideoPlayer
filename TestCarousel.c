@@ -20,7 +20,6 @@ static gboolean isStarted = FALSE;
 struct Frames frames[5];
 
 static void start_timer(GtkWidget *darea){
-  //checkes timer flag if false then start timer
   if (!isStarted){
     timer = g_timeout_add(650, (GSourceFunc)update_frame, darea);
     isStarted = TRUE;
@@ -28,11 +27,12 @@ static void start_timer(GtkWidget *darea){
   }
 }
 
-static void stop_timer(gint data){
+//
+static void stop_timer(){
   if(isStarted){
-    g_source_remove(data);
+    g_source_remove(timer);
     isStarted = FALSE;
-    printf("Stopping Timer: %d\n", data);
+    printf("Stopping Timer: %d\n", timer);
   }
 }
 
