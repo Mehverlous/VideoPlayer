@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\videoplayer.dir/objects.a
+C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\ar.exe qc CMakeFiles\videoplayer.dir/objects.a @CMakeFiles\videoplayer.dir\objects1.rsp
+C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\videoplayer.dir/objects.a -Wl,--no-whole-archive -o videoplayer.exe -Wl,--out-implib,libvideoplayer.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\videoplayer.dir\linkLibs.rsp
