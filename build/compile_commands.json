@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/build",
+  "command": "C:\\Users\\David\\Documents\\DevProjects\\msys64\\mingw64\\bin\\gcc.exe -DLIBDEFLATE_DLL @CMakeFiles/videoplayer.dir/includes_C.rsp -g -std=gnu11   -mfpmath=sse -msse -msse2 -o CMakeFiles\\videoplayer.dir\\main.c.obj -c C:\\Users\\David\\Documents\\DevProjects\\msys64\\home\\David\\Workspace\\VideoPlayer\\main.c",
+  "file": "C:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/main.c",
+  "output": "CMakeFiles/videoplayer.dir/main.c.obj"
+}
+]
