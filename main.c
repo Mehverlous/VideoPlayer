@@ -39,7 +39,7 @@ AVFormatContext *fmt_ctx = NULL;
 static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
 static int width, height;
 static enum AVPixelFormat pix_fmt;
-static const char *src_filename = "RickRoll.mp4";
+static const char *src_filename = "../Documents/RickRoll.mp4";
 static AVStream *video_stream = NULL, *audio_stream = NULL;
 static uint8_t *video_dst_data[4] = {NULL};
 static int video_dst_linesize[4];
@@ -53,28 +53,28 @@ static int audio_frame_count = 0;
 
 
 
-// static void start_timer(GtkWidget *darea){
-//   if (!isStarted){
-//     timer = g_timeout_add(650, (GSourceFunc)update_frame, darea);
-//     isStarted = TRUE;
-//     printf("Starting Timer: %d\n", timer);
-//   }
-// }
+static void start_timer(GtkWidget *darea){
+  if (!isStarted){
+    timer = g_timeout_add(650, (GSourceFunc)update_frame, darea);
+    isStarted = TRUE;
+    printf("Starting Timer: %d\n", timer);
+  }
+}
 
-// static void stop_timer(){
-//   if(isStarted){
-//     g_source_remove(timer);
-//     isStarted = FALSE;
-//     printf("Stopping Timer: %d\n", timer);
-//   }
-// }
+static void stop_timer(){
+  if(isStarted){
+    g_source_remove(timer);
+    isStarted = FALSE;
+    printf("Stopping Timer: %d\n", timer);
+  }
+}
 
-// static gboolean update_frame(GtkWidget *darea){
-//   imgFrameNum++;
-//   if (imgFrameNum > 4)
-//     imgFrameNum = 0;
-//   gtk_widget_queue_draw(darea);
-// }
+static gboolean update_frame(GtkWidget *darea){
+  imgFrameNum++;
+  if (imgFrameNum > 4)
+    imgFrameNum = 0;
+  gtk_widget_queue_draw(darea);
+}
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
   frames[0].imgFrameData = gdk_pixbuf_new_from_file("./Test_Images/TestImage1.png", NULL);
@@ -343,7 +343,7 @@ static void activate(GtkApplication *app, gpointer user_data){
   gtk_box_append(GTK_BOX(button_box), pause_button);
   //g_signal_connect_swapped(pause_button, "clicked", G_CALLBACK(stop_timer), NULL);
 
-  int play = video_processor();
+  //int play = video_processor();
   
   gtk_window_present(GTK_WINDOW(window));
 }
