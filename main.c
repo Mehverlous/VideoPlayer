@@ -7,9 +7,10 @@
 #include <libavutil/timestamp.h>
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
 
-// static void start_timer(GtkWidget *);
-// static void stop_timer(gint);
+static void start_timer(GtkWidget *);
+static void stop_timer();
 static gboolean update_frame(GtkWidget *);
 static void draw_function(GtkDrawingArea *, cairo_t *, int, int, gpointer);
 static void activate(GtkApplication *, gpointer);
@@ -23,39 +24,40 @@ struct Frames{
 };
 
 GdkPixbuf *currentFrame;
-GdkColorspace colorspace;
-gboolean has_alpha = FALSE;
-int bits_per_sample = 24;
-int rowstride = 1280;
-GdkPixbufDestroyNotify destroy_fn = NULL;
-gpointer destroy_fn_dat = NULL;
+// GdkColorspace colorspace;
+// gboolean has_alpha = FALSE;
+// int bits_per_sample = 24;
+// int rowstride = 1280;
+// GdkPixbufDestroyNotify destroy_fn = NULL;
+// gpointer destroy_fn_dat = NULL;
 
-static int imgFrameNum = 0;
+// static int imgFrameNum = 0;
 gint timer;
 static gboolean isStarted = FALSE;
 struct Frames frames[5];
+int currentImage = 1;
 
-AVFormatContext *fmt_ctx = NULL;
-static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
-static int width, height;
-static enum AVPixelFormat pix_fmt;
-static const char *src_filename = "../Documents/RickRoll.mp4";
-static AVStream *video_stream = NULL, *audio_stream = NULL;
-static uint8_t *video_dst_data[4] = {NULL};
-static int video_dst_linesize[4];
-static int video_dst_bufsize;
+// AVFormatContext *fmt_ctx = NULL;
+// static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
+// static int width, height;
+// static enum AVPixelFormat pix_fmt;
+// static const char *src_filename = "./Documents/RickRoll.mp4";
+// static AVStream *video_stream = NULL, *audio_stream = NULL;
+// static uint8_t *video_dst_data[4] = {NULL};
+// static int video_dst_linesize[4];
+// static int video_dst_bufsize;
  
-static int video_stream_idx = -1, audio_stream_idx = -1;
-static AVFrame *frame = NULL;
-static AVPacket *pkt = NULL;
-static int video_frame_count = 0;
-static int audio_frame_count = 0;
+// static int video_stream_idx = -1, audio_stream_idx = -1;
+// static AVFrame *frame = NULL;
+// static AVPacket *pkt = NULL;
+// static int video_frame_count = 0;
+// static int audio_frame_count = 0;
 
 
 
 static void start_timer(GtkWidget *darea){
   if (!isStarted){
-    timer = g_timeout_add(650, (GSourceFunc)update_frame, darea);
+    timer = g_timeout_add(50, (GSourceFunc)update_frame, darea);
     isStarted = TRUE;
     printf("Starting Timer: %d\n", timer);
   }
@@ -70,236 +72,221 @@ static void stop_timer(){
 }
 
 static gboolean update_frame(GtkWidget *darea){
-  imgFrameNum++;
-  if (imgFrameNum > 4)
-    imgFrameNum = 0;
+  currentImage++;
+  if (currentImage > 200)
+    currentImage = 1;
   gtk_widget_queue_draw(darea);
 }
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
-  frames[0].imgFrameData = gdk_pixbuf_new_from_file("./Test_Images/TestImage1.png", NULL);
-  frames[1].imgFrameData = gdk_pixbuf_new_from_file("./Test_Images/TestImage2.png", NULL);
-  frames[2].imgFrameData = gdk_pixbuf_new_from_file("./Test_Images/TestImage3.png", NULL);
-  frames[3].imgFrameData = gdk_pixbuf_new_from_file("./Test_Images/TestImage4.png", NULL);
-  frames[4].imgFrameData = gdk_pixbuf_new_from_file("./Test_Images/TestImage5.png", NULL);
+  //updates the source surface with new pixbuf info
+  char str[100] = {0};
+  char extension[] = ".ppm";
+  char directory[1000] = "./Test_Images/TestImage";
+  itoa(currentImage, str, 10);
+  strcat(str, extension);
+  strcat(directory, str);
 
-  // //updates the source surface with new pixbuf info
-  // gdk_cairo_set_source_pixbuf(cr, frames[imgFrameNum].imgFrameData, 0,0);
-
-  gdk_cairo_set_source_pixbuf(cr, currentFrame, 0,0);
+  GdkPixbuf *testing = gdk_pixbuf_new_from_file(directory, NULL);
+  gdk_cairo_set_source_pixbuf(cr, testing, 0,0);
 
   //paint the current surface containing the current image
   cairo_paint(cr);
 }
 
-static int output_video_frame(AVFrame *frame){
-  if (frame->width != width || frame->height != height || frame->format != pix_fmt) {
-      /* To handle this change, one could call av_image_alloc again and
-        * decode the following frames into another rawvideo file. */
-      fprintf(stderr, "Error: Width, height and pixel format have to be "
-              "constant in a rawvideo file, but the width, height or "
-              "pixel format of the input video changed:\n"
-              "old: width = %d, height = %d, format = %s\n"
-              "new: width = %d, height = %d, format = %s\n",
-              width, height, av_get_pix_fmt_name(pix_fmt),
-              frame->width, frame->height,
-              av_get_pix_fmt_name(frame->format));
-      return -1;
+void saveFrame(AVFrame *pFrame, int width, int height, int iFrame){
+  FILE *pFile;
+  char szFilename[32];
+  int  y;
+  
+  // Open file
+  sprintf(szFilename, "./Test_Images/TestImage%d.ppm", iFrame);
+  pFile = fopen(szFilename, "wb");
+  if(pFile == NULL){
+    fprintf(stderr, "Cannot open file");
+    return;
   }
-
-  printf("video_frame n:%d coded_n: NA\n", video_frame_count++);
-
-  /* copy decoded frame to destination buffer:
-    * this is required since rawvideo expects non aligned data */
-  av_image_copy(video_dst_data, video_dst_linesize, (const uint8_t **)(frame->data), frame->linesize, pix_fmt, width, height);
-
-  //creating a new pixbuf of the current frame to send to the drawing function
-  currentFrame = gdk_pixbuf_new_from_data((const uint8_t *)(frame->data), colorspace, has_alpha, bits_per_sample, width, height, rowstride, destroy_fn, destroy_fn_dat);
-
-  return 0;
-}
-
-static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
-  int ret = 0;
-
-  // submit the packet to the decoder
-  ret = avcodec_send_packet(dec, pkt);
-  if (ret < 0) {
-      fprintf(stderr, "Error submitting a packet for decoding (%s)\n", av_err2str(ret));
-      return ret;
-  }
-
-  // get all the available frames from the decoder
-  while(ret >= 0) {
-      ret = avcodec_receive_frame(dec, frame);
-      if(ret < 0) {
-          // those two return values are special and mean there is no output
-          // frame available, but there were no errors during decoding
-          if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
-              return 0;
-
-          fprintf(stderr, "Error during decoding (%s)\n", av_err2str(ret));
-          return ret;
-      }
-
-      // write the frame data to output file
-      if(dec->codec->type == AVMEDIA_TYPE_VIDEO)
-          ret = output_video_frame(frame);
-      else
-          //ret = output_audio_frame(frame);
-
-      av_frame_unref(frame);
-      if(ret < 0)
-          return ret;
-  }
-
-  return 0;
-}
-
-static int open_codec_context(int *stream_idx, AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type){
-    int ret, stream_index;
-    AVStream *st;
-    const AVCodec *dec = NULL;
- 
-    ret = av_find_best_stream(fmt_ctx, type, -1, -1, NULL, 0);
-    if (ret < 0) {
-        fprintf(stderr, "Could not find %s stream in input file '%s'\n", av_get_media_type_string(type), src_filename);
-        return ret;
-    } else {
-        stream_index = ret;
-        st = fmt_ctx->streams[stream_index];
- 
-        /* find decoder for the stream */
-        dec = avcodec_find_decoder(st->codecpar->codec_id);
-        if (!dec) {
-            fprintf(stderr, "Failed to find %s codec\n", av_get_media_type_string(type));
-            return AVERROR(EINVAL);
-        }
- 
-        /* Allocate a codec context for the decoder */
-        *dec_ctx = avcodec_alloc_context3(dec);
-        if (!*dec_ctx) {
-            fprintf(stderr, "Failed to allocate the %s codec context\n", av_get_media_type_string(type));
-            return AVERROR(ENOMEM);
-        }
- 
-        /* Copy codec parameters from input stream to output codec context */
-        if ((ret = avcodec_parameters_to_context(*dec_ctx, st->codecpar)) < 0) {
-            fprintf(stderr, "Failed to copy %s codec parameters to decoder context\n", av_get_media_type_string(type));
-            return ret;
-        }
- 
-        /* Init the decoders */
-        if ((ret = avcodec_open2(*dec_ctx, dec, NULL)) < 0) {
-            fprintf(stderr, "Failed to open %s codec\n", av_get_media_type_string(type));
-            return ret;
-        }
-        *stream_idx = stream_index;
-    }
- 
-    return 0;
+  
+  // Write header
+  fprintf(pFile, "P6\n%d %d\n%d\n", width, height, 255);
+  
+  // Write pixel data
+  for(y = 0; y < height; y++)
+    fwrite(pFrame->data[0] + y * pFrame->linesize[0], 1, width * 3, pFile);
+  
+  // Close file
+  fclose(pFile);
 }
 
 int video_processor(){
-  int ret = 0;
-
-  // Open the file and allocaate the format context to the flie
-  if(avformat_open_input(&fmt_ctx, src_filename, NULL, NULL) < 0){
-    fprintf(stderr, "Could not open source file %s\n", src_filename);
-    exit(1);
-  }
-
-  /* retrieve stream information 
-      some file formats do not have headers or store enough information. To prevent issues from such cases
-      it is important to call the avformat_find_stream_into() function, which reads and decodes a few frames to get
-      missing information
-  */
-  if(avformat_find_stream_info(fmt_ctx, NULL) < 0) {
-      fprintf(stderr, "Could not find stream information\n");
-      exit(1);
-  }
-
-  //Decoding the video
-  if(open_codec_context(&video_stream_idx, &video_dec_ctx, fmt_ctx, AVMEDIA_TYPE_VIDEO) >= 0) {
-    video_stream = fmt_ctx->streams[video_stream_idx];
-
-    /* allocate image where the decoded image will be put */
-    width = video_dec_ctx->width;
-    height = video_dec_ctx->height;
-    pix_fmt = video_dec_ctx->pix_fmt;
-    ret = av_image_alloc(video_dst_data, video_dst_linesize, width, height, pix_fmt, 1);
-    if(ret < 0) {
-        fprintf(stderr, "Could not allocate raw video buffer\n");
-        exit(1);
-    }
-    video_dst_bufsize = ret;
-  }
-
-  //Decoding the audio
-  /* dump input information to stderr */
-  av_dump_format(fmt_ctx, 0, src_filename, 0);
-
-  if(!audio_stream && !video_stream) {
-      fprintf(stderr, "Could not find audio or video stream in the input, aborting\n");
-      ret = 1;
-      goto end;
-  }
-
-  frame = av_frame_alloc();
-  if(!frame) {
-      fprintf(stderr, "Could not allocate frame\n");
-      ret = AVERROR(ENOMEM);
-      goto end;
-  }
-
-  pkt = av_packet_alloc();
-  if(!pkt) {
-      fprintf(stderr, "Could not allocate packet\n");
-      ret = AVERROR(ENOMEM);
-      goto end;
-  }
-
-  /* read frames from the file */
-  // while (av_read_frame(fmt_ctx, pkt) >= 0) {
-  //     // check if the packet belongs to a stream we are interested in, otherwise
-  //     // skip it
-  //     if (pkt->stream_index == video_stream_idx)
-  //         ret = decode_packet(video_dec_ctx, pkt);
-  //     else if (pkt->stream_index == audio_stream_idx)
-  //         ret = decode_packet(audio_dec_ctx, pkt);
-  //     av_packet_unref(pkt);
-  //     if (ret < 0)
-  //         break;
+  // if (argc < 2){
+  //   printf("Please provide a movie file\n");
+  //   return -1;
   // }
 
-  for(int i = 0; i < 5; i++){
-    if(pkt->stream_index == video_stream_idx)
-        ret = decode_packet(video_dec_ctx, pkt);
-    else if(pkt->stream_index == audio_stream_idx)
-        ret = decode_packet(audio_dec_ctx, pkt);
-    av_packet_unref(pkt);
-    if(ret < 0)
-        break;
+  // Register all formats and codecs
+  // Now not useful anymore since version 4.0
+  //av_register_all();
+  
+  // Open video file
+  AVFormatContext *pFormatCtx = avformat_alloc_context();
+  if(!pFormatCtx){
+    fprintf(stderr, "Could not allocate memory for format context");
+    return -1;
   }
 
-  /* flush the decoders */
-  if(video_dec_ctx)
-      decode_packet(video_dec_ctx, NULL);
-  if(audio_dec_ctx)
-      decode_packet(audio_dec_ctx, NULL);
+  if(avformat_open_input(&pFormatCtx, "./Documents/RickRoll.mp4", NULL, NULL) != 0){
+    fprintf(stderr, "Cannot open file");
+    return -1; // Couldn't open file
+  }
+  
+  // Retrieve stream information
+  if(avformat_find_stream_info(pFormatCtx, NULL) < 0){
+    fprintf(stderr, "Could not find stream information");
+    return -1; // Couldn't find stream information
+  }
 
-  printf("Demuxing succeeded.\n");
+  const AVCodec *pCodec = NULL;
+  AVCodecParameters *pCodecParams = NULL;
+  
+  // Find the first video stream
+  int videoStream = -1;
+  int i;
 
-  // Free resources
-  end:
-    avcodec_free_context(&video_dec_ctx);
-    avcodec_free_context(&audio_dec_ctx);
-    avformat_close_input(&fmt_ctx);
-    av_packet_free(&pkt);
-    av_frame_free(&frame);
-    av_free(video_dst_data[0]);
- 
-    return ret < 0;
+  for(i = 0; i < pFormatCtx->nb_streams; i++){
+    if(pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO){
+      videoStream = i;
+      pCodecParams = pFormatCtx->streams[i]->codecpar;
+      pCodec = avcodec_find_decoder(pCodecParams->codec_id);
+      break; // We want only the first video stream, the leave the other stream that might be present in the file
+    }
+  }
+
+  if(videoStream == -1){
+    fprintf(stderr, "Did not find a video stream");
+    return -1;
+  }
+
+  // Get a pointer to the codec context for the video stream
+  AVCodecContext *pCodecCtx = avcodec_alloc_context3(pCodec);
+  if(pCodecCtx == NULL){
+    fprintf(stderr, "Could not allocate video codec context");
+    return -1;
+  }
+
+  // Fill the codec context from the codec parameters values
+  if(avcodec_parameters_to_context(pCodecCtx, pCodecParams) < 0){
+    fprintf(stderr, "Failed to copy codec params to codec context");
+    return -1;
+  }
+
+  if(avcodec_open2(pCodecCtx, pCodec, NULL) < 0){
+    fprintf(stderr, "failed to open codec");
+    return -1;
+  }
+
+  // Allocate video frame
+  AVFrame *pFrame = av_frame_alloc();
+  if(pFrame == NULL){
+    fprintf(stderr, "Could not allocate video frame");
+    return -1;
+  }
+
+  AVPacket *pPacket = av_packet_alloc();
+  if(pPacket == NULL){
+    fprintf(stderr, "Failed to allocate memory for AVPacket");
+    return -1;
+  }
+
+  // Allocate an AVFrame structure
+  AVFrame *pFrameRGB = av_frame_alloc();
+  if(pFrameRGB == NULL){
+    fprintf(stderr, "Could not allocate output video frame");
+    return -1;
+  }
+
+  struct SwsContext *swsCtx =
+    sws_getContext(
+        pCodecCtx->width,
+        pCodecCtx->height,
+        pCodecCtx->pix_fmt,
+        pCodecCtx->width,
+        pCodecCtx->height,
+        AV_PIX_FMT_RGB24,
+        SWS_BILINEAR,
+        NULL,
+        NULL,
+        NULL
+    );
+
+  int frames_to_process = 200;
+  i = 0;
+  
+  // Read frames and save first five frames to disk
+  while (av_read_frame(pFormatCtx, pPacket) >= 0 && i < frames_to_process){
+    // Is this a packet from the video stream?
+    if(pPacket->stream_index == videoStream){
+      // Decode video frame  
+      if(avcodec_send_packet(pCodecCtx, pPacket) < 0){
+        fprintf(stderr, "Error while sending packet to decoder.");
+        return -1;
+      }
+      
+      int frameFinished = 1;
+      // Did we get a video frame?
+      while(frameFinished >= 0 && i < frames_to_process) {
+        frameFinished = avcodec_receive_frame(pCodecCtx, pFrame);
+        // These two return values are special and mean there is no output
+        // frame available, but there were no errors during decoding
+        if(frameFinished == AVERROR(EAGAIN) || frameFinished == AVERROR_EOF)
+          break;
+
+        else if(frameFinished < 0){
+          fprintf(stderr, "Error during decoding");
+          return -1;
+        }
+
+        if(frameFinished >= 0){
+          if (av_image_alloc(pFrameRGB->data, pFrameRGB->linesize, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24, 1) < 0){
+            fprintf(stderr, "Could not allocate output frame");
+            return -1;
+          }
+
+          // Convert the image from its native format to RGB
+          sws_scale(
+              swsCtx,
+              (const uint8_t* const*)pFrame->data,
+              pFrame->linesize,
+              0,
+              pCodecCtx->height,
+              pFrameRGB->data,
+              pFrameRGB->linesize);
+          
+	        // Save the frame to disk
+	        saveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, ++i);
+        }
+      }
+    }
+
+    // Free the packet that was allocated by av_read_frame
+    av_packet_unref(pPacket);
+  }
+
+  sws_freeContext(swsCtx);
+
+  // Free the YUV frame
+  av_frame_free(&pFrame);
+
+  // Free the RGB image
+  av_frame_free(&pFrameRGB);
+
+  // Close the codec
+  avcodec_free_context(&pCodecCtx);
+
+  // Close the video file
+  avformat_close_input(&pFormatCtx);
+  
+  return 0;
 }
 
 static void activate(GtkApplication *app, gpointer user_data){
@@ -337,13 +324,13 @@ static void activate(GtkApplication *app, gpointer user_data){
 
   play_button = gtk_button_new_with_label("Play");
   gtk_box_append(GTK_BOX(button_box), play_button);
-  //g_signal_connect_swapped(play_button, "clicked", G_CALLBACK(start_timer), darea);
+  g_signal_connect_swapped(play_button, "clicked", G_CALLBACK(start_timer), darea);
 
   pause_button = gtk_button_new_with_label("Pause");
   gtk_box_append(GTK_BOX(button_box), pause_button);
-  //g_signal_connect_swapped(pause_button, "clicked", G_CALLBACK(stop_timer), NULL);
+  g_signal_connect_swapped(pause_button, "clicked", G_CALLBACK(stop_timer), NULL);
 
-  //int play = video_processor();
+  int play = video_processor();
   
   gtk_window_present(GTK_WINDOW(window));
 }

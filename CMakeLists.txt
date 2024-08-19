@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(GTKTutorial)
+project(VideoPlayer)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -27,7 +27,10 @@ find_library(AVUTIL_LIBRARY avutil)
 find_path(AVDEVICE_INCLUDE_DIR libavdevice/avdevice.h)
 find_library(AVDEVICE_LIBRARY avdevice)
 
+find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h)
+find_library(SWSCALE_lIBRARY swscale)
+
 add_executable(videoplayer main.c)
 #set_target_properties(TutorialApp PROPERTIES WIN32_EXECUTABLE true)  # If you dont want console to run with your .exe
-target_link_libraries(videoplayer ${GTK4_LIBRARIES} ${AVCODEC_LIBRARY} ${AVFORMAT_LIBRARY} ${AVUTIL_LIBRARY} ${AVDEVICE_LIBRARY})
-target_include_directories(videoplayer PRIVATE ${AVCODEC_INCLUDE_DIR} ${AVFORMAT_INCLUDE_DIR} ${AVUTIL_INCLUDE_DIR} ${AVDEVICE_INCLUDE_DIR})
+target_link_libraries(videoplayer ${GTK4_LIBRARIES} ${AVCODEC_LIBRARY} ${AVFORMAT_LIBRARY} ${AVUTIL_LIBRARY} ${AVDEVICE_LIBRARY} ${SWSCALE_lIBRARY})
+target_include_directories(videoplayer PRIVATE ${AVCODEC_INCLUDE_DIR} ${AVFORMAT_INCLUDE_DIR} ${AVUTIL_INCLUDE_DIR} ${AVDEVICE_INCLUDE_DIR} ${SWSCALE_INCLUDE_DIR})
