@@ -11,8 +11,10 @@
 
 static void start_timer(GtkWidget *);
 static void stop_timer();
-static gboolean update_frame(GtkWidget *);
+static void update_frame(GtkWidget *);
 static void draw_function(GtkDrawingArea *, cairo_t *, int, int, gpointer);
+void update_buffer(AVFrame *, int, int, int);
+void saveFrame(AVFrame *, int, int, int);
 static void activate(GtkApplication *, gpointer);
 static int decode_packet(AVCodecContext *, const AVPacket *);
 static int open_codec_context(int *, AVCodecContext **, AVFormatContext *, enum AVMediaType);
@@ -20,10 +22,15 @@ int main(int ,char **);
 
 //struct that stores the pixbuff data
 struct Frames{
-  GdkPixbuf *imgFrameData;
+  AVFrame *fptr; 
+  int fwidth; 
+  int fheight; 
+  int fnum;
 };
 
-GdkPixbuf *currentFrame;
+cairo_surface_t *currentFrame;
+#define frames_to_process 200
+
 // GdkColorspace colorspace;
 // gboolean has_alpha = FALSE;
 // int bits_per_sample = 24;
@@ -34,14 +41,14 @@ GdkPixbuf *currentFrame;
 // static int imgFrameNum = 0;
 gint timer;
 static gboolean isStarted = FALSE;
-struct Frames frames[5];
+struct Frames frames[frames_to_process];
 int currentImage = 1;
 
 // AVFormatContext *fmt_ctx = NULL;
 // static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
 // static int width, height;
 // static enum AVPixelFormat pix_fmt;
-// static const char *src_filename = "./Documents/RickRoll.mp4";
+static const char *src_filename = "./Documents/RickRoll.mp4";
 // static AVStream *video_stream = NULL, *audio_stream = NULL;
 // static uint8_t *video_dst_data[4] = {NULL};
 // static int video_dst_linesize[4];
@@ -57,7 +64,7 @@ int currentImage = 1;
 
 static void start_timer(GtkWidget *darea){
   if (!isStarted){
-    timer = g_timeout_add(50, (GSourceFunc)update_frame, darea);
+    timer = g_timeout_add(17, (GSourceFunc)update_frame, darea);
     isStarted = TRUE;
     printf("Starting Timer: %d\n", timer);
   }
@@ -71,9 +78,9 @@ static void stop_timer(){
   }
 }
 
-static gboolean update_frame(GtkWidget *darea){
+static void update_frame(GtkWidget *darea){
   currentImage++;
-  if (currentImage > 200)
+  if (currentImage > frames_to_process)
     currentImage = 1;
   gtk_widget_queue_draw(darea);
 }
@@ -81,7 +88,7 @@ static gboolean update_frame(GtkWidget *darea){
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
   //updates the source surface with new pixbuf info
   char str[100] = {0};
-  char extension[] = ".ppm";
+  char extension[] = ".png";
   char directory[1000] = "./Test_Images/TestImage";
   itoa(currentImage, str, 10);
   strcat(str, extension);
@@ -90,9 +97,26 @@ static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int heig
   GdkPixbuf *testing = gdk_pixbuf_new_from_file(directory, NULL);
   gdk_cairo_set_source_pixbuf(cr, testing, 0,0);
 
+  // currentFrame = cairo_image_surface_create_for_data(frames[currentImage].fptr->data[0], 
+  //                                                     CAIRO_FORMAT_RGB24, 
+  //                                                     frames[currentImage].fwidth, 
+  //                                                     frames[currentImage].fheight, 
+  //                                                     cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, frames[currentImage].fwidth));
+
+  // cairo_set_source_surface(cr, currentFrame, 0, 0);
+
   //paint the current surface containing the current image
   cairo_paint(cr);
 }
+
+//static void decode_packet();
+void update_buffer(AVFrame *pFrame, int width, int height, int iFrame){
+  frames[iFrame].fptr = pFrame;
+  frames[iFrame].fwidth = width;
+  frames[iFrame].fheight = height;
+
+}
+
 
 void saveFrame(AVFrame *pFrame, int width, int height, int iFrame){
   FILE *pFile;
@@ -100,7 +124,7 @@ void saveFrame(AVFrame *pFrame, int width, int height, int iFrame){
   int  y;
   
   // Open file
-  sprintf(szFilename, "./Test_Images/TestImage%d.ppm", iFrame);
+  sprintf(szFilename, "./Test_Images/TestImage%d.png", iFrame);
   pFile = fopen(szFilename, "wb");
   if(pFile == NULL){
     fprintf(stderr, "Cannot open file");
@@ -119,14 +143,6 @@ void saveFrame(AVFrame *pFrame, int width, int height, int iFrame){
 }
 
 int video_processor(){
-  // if (argc < 2){
-  //   printf("Please provide a movie file\n");
-  //   return -1;
-  // }
-
-  // Register all formats and codecs
-  // Now not useful anymore since version 4.0
-  //av_register_all();
   
   // Open video file
   AVFormatContext *pFormatCtx = avformat_alloc_context();
@@ -135,7 +151,7 @@ int video_processor(){
     return -1;
   }
 
-  if(avformat_open_input(&pFormatCtx, "./Documents/RickRoll.mp4", NULL, NULL) != 0){
+  if(avformat_open_input(&pFormatCtx, src_filename, NULL, NULL) != 0){
     fprintf(stderr, "Cannot open file");
     return -1; // Couldn't open file
   }
@@ -151,13 +167,12 @@ int video_processor(){
   
   // Find the first video stream
   int videoStream = -1;
-  int i;
 
-  for(i = 0; i < pFormatCtx->nb_streams; i++){
+  for(int i = 0; i < pFormatCtx->nb_streams; i++){
     if(pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO){
       videoStream = i;
       pCodecParams = pFormatCtx->streams[i]->codecpar;
-      pCodec = avcodec_find_decoder(pCodecParams->codec_id);
+      pCodec = avcodec_find_decoder(pCodecParams->codec_id); //allocates decoder based on codec parameters
       break; // We want only the first video stream, the leave the other stream that might be present in the file
     }
   }
@@ -219,8 +234,7 @@ int video_processor(){
         NULL
     );
 
-  int frames_to_process = 200;
-  i = 0;
+  int i = 0;
   
   // Read frames and save first five frames to disk
   while (av_read_frame(pFormatCtx, pPacket) >= 0 && i < frames_to_process){
@@ -261,9 +275,15 @@ int video_processor(){
               pCodecCtx->height,
               pFrameRGB->data,
               pFrameRGB->linesize);
+
+          // Save the frame to the array
+          update_buffer(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
           
 	        // Save the frame to disk
 	        saveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, ++i);
+
+          
+
         }
       }
     }
@@ -290,6 +310,9 @@ int video_processor(){
 }
 
 static void activate(GtkApplication *app, gpointer user_data){
+  if(video_processor() < 0)
+    return;
+
   GtkWidget *window, *vbox, *darea, *da_container, *button_box, *play_button, *pause_button;
 
   //initializing the window
@@ -329,8 +352,6 @@ static void activate(GtkApplication *app, gpointer user_data){
   pause_button = gtk_button_new_with_label("Pause");
   gtk_box_append(GTK_BOX(button_box), pause_button);
   g_signal_connect_swapped(pause_button, "clicked", G_CALLBACK(stop_timer), NULL);
-
-  int play = video_processor();
   
   gtk_window_present(GTK_WINDOW(window));
 }
@@ -339,7 +360,7 @@ int main (int argc,char **argv){
   GtkApplication *app;
   int status;
 
-  app = gtk_application_new("org.gtk.demo02", G_APPLICATION_DEFAULT_FLAGS);
+  app = gtk_application_new("org.gtk.videoplayer", G_APPLICATION_DEFAULT_FLAGS);
   g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
   status = g_application_run(G_APPLICATION(app), argc, argv);
   g_object_unref(app);
