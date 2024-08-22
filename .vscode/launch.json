@@ -5,6 +5,7 @@
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
       "request": "launch",
+      //"args": ["./Documents/RickRoll.mp4", "test_video", "test_audio"],
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,

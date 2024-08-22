@@ -13,23 +13,25 @@ static void start_timer(GtkWidget *);
 static void stop_timer();
 static void update_frame(GtkWidget *);
 static void draw_function(GtkDrawingArea *, cairo_t *, int, int, gpointer);
-void update_buffer(AVFrame *, int, int, int);
+static void update_buffer(AVFrame *, int, int, int);
 void saveFrame(AVFrame *, int, int, int);
 static void activate(GtkApplication *, gpointer);
-static int decode_packet(AVCodecContext *, const AVPacket *);
-static int open_codec_context(int *, AVCodecContext **, AVFormatContext *, enum AVMediaType);
 int main(int ,char **);
 
 //struct that stores the pixbuff data
-struct Frames{
-  AVFrame *fptr; 
+typedef struct Frames{
+  uint8_t *video_dst_data[4];
+  int video_dst_linesize[4];
   int fwidth; 
   int fheight; 
   int fnum;
-};
+}Frames;
+
+static uint8_t *test_dst_data[4] = {NULL};
+static int      test_dst_linesize[4]; 
 
 cairo_surface_t *currentFrame;
-#define frames_to_process 200
+#define frames_to_process 5
 
 // GdkColorspace colorspace;
 // gboolean has_alpha = FALSE;
@@ -42,7 +44,7 @@ cairo_surface_t *currentFrame;
 gint timer;
 static gboolean isStarted = FALSE;
 struct Frames frames[frames_to_process];
-int currentImage = 1;
+int currentImage = 0;
 
 // AVFormatContext *fmt_ctx = NULL;
 // static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
@@ -81,40 +83,42 @@ static void stop_timer(){
 static void update_frame(GtkWidget *darea){
   currentImage++;
   if (currentImage > frames_to_process)
-    currentImage = 1;
+    currentImage = 0;
   gtk_widget_queue_draw(darea);
 }
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
   //updates the source surface with new pixbuf info
-  char str[100] = {0};
-  char extension[] = ".png";
-  char directory[1000] = "./Test_Images/TestImage";
-  itoa(currentImage, str, 10);
-  strcat(str, extension);
-  strcat(directory, str);
+  // char str[100] = {0};
+  // char extension[] = ".png";
+  // char directory[1000] = "./Test_Images/TestImage";
+  // itoa(currentImage, str, 10);
+  // strcat(str, extension);
+  // strcat(directory, str);
 
-  GdkPixbuf *testing = gdk_pixbuf_new_from_file(directory, NULL);
-  gdk_cairo_set_source_pixbuf(cr, testing, 0,0);
+  // GdkPixbuf *testing = gdk_pixbuf_new_from_file(directory, NULL);
+  // gdk_cairo_set_source_pixbuf(cr, testing, 0,0);
 
-  // currentFrame = cairo_image_surface_create_for_data(frames[currentImage].fptr->data[0], 
-  //                                                     CAIRO_FORMAT_RGB24, 
-  //                                                     frames[currentImage].fwidth, 
-  //                                                     frames[currentImage].fheight, 
-  //                                                     cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, frames[currentImage].fwidth));
+  currentFrame = cairo_image_surface_create_for_data(frames[currentImage].video_dst_data[0], 
+                                                      CAIRO_FORMAT_RGB24, 
+                                                      frames[currentImage].fwidth, 
+                                                      frames[currentImage].fheight, 
+                                                      cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, frames[currentImage].fwidth));
 
-  // cairo_set_source_surface(cr, currentFrame, 0, 0);
+  cairo_set_source_surface(cr, currentFrame, 0, 0);
 
   //paint the current surface containing the current image
   cairo_paint(cr);
 }
 
-//static void decode_packet();
 void update_buffer(AVFrame *pFrame, int width, int height, int iFrame){
-  frames[iFrame].fptr = pFrame;
+  //av_image_copy2(frames[iFrame].video_dst_data, frames[iFrame].video_dst_linesize, pFrame->data, pFrame->linesize, AV_PIX_FMT_RGB24, width, height);
+  av_image_alloc(frames[iFrame].video_dst_data, frames[iFrame].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
+  av_image_copy2(frames[iFrame].video_dst_data, frames[iFrame].video_dst_linesize, pFrame->data, pFrame->linesize, AV_PIX_FMT_RGB24, width, height);
+
   frames[iFrame].fwidth = width;
   frames[iFrame].fheight = height;
-
+  frames[iFrame].fnum = iFrame + 1;
 }
 
 
@@ -277,13 +281,10 @@ int video_processor(){
               pFrameRGB->linesize);
 
           // Save the frame to the array
-          update_buffer(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
+          update_buffer(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i++);
           
 	        // Save the frame to disk
-	        saveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, ++i);
-
-          
-
+	        //saveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, ++i);
         }
       }
     }
