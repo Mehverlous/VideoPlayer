@@ -16,7 +16,7 @@ static void draw_function(GtkDrawingArea *, cairo_t *, int, int, gpointer);
 static void update_buffer(AVFrame *, int, int, int);
 void saveFrame(AVFrame *, int, int, int);
 static void activate(GtkApplication *, gpointer);
-int main(int ,char **);
+int main(int, char **);
 
 //struct that stores the pixbuff data
 typedef struct Frames{
@@ -30,39 +30,15 @@ typedef struct Frames{
 static uint8_t *test_dst_data[4] = {NULL};
 static int      test_dst_linesize[4]; 
 
-cairo_surface_t *currentFrame;
-#define frames_to_process 5
-
-// GdkColorspace colorspace;
-// gboolean has_alpha = FALSE;
-// int bits_per_sample = 24;
-// int rowstride = 1280;
-// GdkPixbufDestroyNotify destroy_fn = NULL;
-// gpointer destroy_fn_dat = NULL;
+#define frames_to_process 1000
 
 // static int imgFrameNum = 0;
 gint timer;
 static gboolean isStarted = FALSE;
 struct Frames frames[frames_to_process];
 int currentImage = 0;
-
-// AVFormatContext *fmt_ctx = NULL;
-// static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
-// static int width, height;
-// static enum AVPixelFormat pix_fmt;
 static const char *src_filename = "./Documents/RickRoll.mp4";
-// static AVStream *video_stream = NULL, *audio_stream = NULL;
-// static uint8_t *video_dst_data[4] = {NULL};
-// static int video_dst_linesize[4];
-// static int video_dst_bufsize;
- 
-// static int video_stream_idx = -1, audio_stream_idx = -1;
-// static AVFrame *frame = NULL;
-// static AVPacket *pkt = NULL;
-// static int video_frame_count = 0;
-// static int audio_frame_count = 0;
-
-
+GdkPixbuf *currentFrame;
 
 static void start_timer(GtkWidget *darea){
   if (!isStarted){
@@ -82,68 +58,34 @@ static void stop_timer(){
 
 static void update_frame(GtkWidget *darea){
   currentImage++;
-  if (currentImage > frames_to_process)
+  if (currentImage >= frames_to_process)
     currentImage = 0;
   gtk_widget_queue_draw(darea);
 }
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
-  //updates the source surface with new pixbuf info
-  // char str[100] = {0};
-  // char extension[] = ".png";
-  // char directory[1000] = "./Test_Images/TestImage";
-  // itoa(currentImage, str, 10);
-  // strcat(str, extension);
-  // strcat(directory, str);
-
-  // GdkPixbuf *testing = gdk_pixbuf_new_from_file(directory, NULL);
-  // gdk_cairo_set_source_pixbuf(cr, testing, 0,0);
-
-  currentFrame = cairo_image_surface_create_for_data(frames[currentImage].video_dst_data[0], 
-                                                      CAIRO_FORMAT_RGB24, 
+  currentFrame = gdk_pixbuf_new_from_data(frames[currentImage].video_dst_data[0], 
+                                                      GDK_COLORSPACE_RGB, 
+                                                      FALSE, 
+                                                      8, 
                                                       frames[currentImage].fwidth, 
                                                       frames[currentImage].fheight, 
-                                                      cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, frames[currentImage].fwidth));
-
-  cairo_set_source_surface(cr, currentFrame, 0, 0);
+                                                      frames[currentImage].video_dst_linesize[0], 
+                                                      NULL, 
+                                                      NULL);
+  gdk_cairo_set_source_pixbuf(cr, currentFrame, 0, 0);
 
   //paint the current surface containing the current image
   cairo_paint(cr);
 }
 
 void update_buffer(AVFrame *pFrame, int width, int height, int iFrame){
-  //av_image_copy2(frames[iFrame].video_dst_data, frames[iFrame].video_dst_linesize, pFrame->data, pFrame->linesize, AV_PIX_FMT_RGB24, width, height);
   av_image_alloc(frames[iFrame].video_dst_data, frames[iFrame].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
   av_image_copy2(frames[iFrame].video_dst_data, frames[iFrame].video_dst_linesize, pFrame->data, pFrame->linesize, AV_PIX_FMT_RGB24, width, height);
 
   frames[iFrame].fwidth = width;
   frames[iFrame].fheight = height;
   frames[iFrame].fnum = iFrame + 1;
-}
-
-
-void saveFrame(AVFrame *pFrame, int width, int height, int iFrame){
-  FILE *pFile;
-  char szFilename[32];
-  int  y;
-  
-  // Open file
-  sprintf(szFilename, "./Test_Images/TestImage%d.png", iFrame);
-  pFile = fopen(szFilename, "wb");
-  if(pFile == NULL){
-    fprintf(stderr, "Cannot open file");
-    return;
-  }
-  
-  // Write header
-  fprintf(pFile, "P6\n%d %d\n%d\n", width, height, 255);
-  
-  // Write pixel data
-  for(y = 0; y < height; y++)
-    fwrite(pFrame->data[0] + y * pFrame->linesize[0], 1, width * 3, pFile);
-  
-  // Close file
-  fclose(pFile);
 }
 
 int video_processor(){
@@ -282,9 +224,6 @@ int video_processor(){
 
           // Save the frame to the array
           update_buffer(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i++);
-          
-	        // Save the frame to disk
-	        //saveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, ++i);
         }
       }
     }
@@ -319,7 +258,7 @@ static void activate(GtkApplication *app, gpointer user_data){
   //initializing the window
   window = gtk_application_window_new(app);
   gtk_window_set_title(GTK_WINDOW(window), "Testing Carousel");
-  gtk_window_set_default_size(GTK_WINDOW(window), 1080, 800);
+  gtk_window_set_default_size(GTK_WINDOW(window), 1280, 800);
 
   //creating a container to store the main widgets (drawing area and buttons)
   vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
