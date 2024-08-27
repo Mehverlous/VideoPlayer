@@ -1,6 +1,7 @@
 #include <cairo/cairo.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #include <libavutil/imgutils.h>
 #include <libavutil/samplefmt.h>
@@ -250,9 +251,6 @@ int video_processor(){
 }
 
 static void activate(GtkApplication *app, gpointer user_data){
-  if(video_processor() < 0)
-    return;
-
   GtkWidget *window, *vbox, *darea, *da_container, *button_box, *play_button, *pause_button;
 
   //initializing the window
@@ -296,7 +294,7 @@ static void activate(GtkApplication *app, gpointer user_data){
   gtk_window_present(GTK_WINDOW(window));
 }
 
-int main (int argc,char **argv){
+int video_display(int argc, char **argv){
   GtkApplication *app;
   int status;
 
@@ -306,4 +304,17 @@ int main (int argc,char **argv){
   g_object_unref(app);
 
   return status;
+}
+
+int main (int argc,char **argv){
+  pthread_t decode;
+  pthread_t display;
+
+  pthread_create(&decode, NULL, (void *)video_processor, NULL);
+  pthread_create(&display, NULL, (void *)video_display, NULL);
+
+  pthread_join(decode, NULL);
+  pthread_join(display, NULL);
+
+  return 0;
 }

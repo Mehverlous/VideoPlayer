@@ -14,6 +14,7 @@ CMakeFiles/videoplayer.dir/main.c.obj
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cairo/cairo-version.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cairo/cairo.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_stdio_config.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_wstdlib.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/crtdefs.h
@@ -763,8 +764,12 @@ CMakeFiles/videoplayer.dir/main.c.obj
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango-version-macros.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pangocairo.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_compat.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_signal.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_time.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_unistd.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sdks/_mingw_ddk.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdio_s.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdlib_s.h
@@ -779,6 +784,7 @@ CMakeFiles/videoplayer.dir/main.c.obj
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/string.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/swprintf.inl
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/timeb.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/time.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/vadefs.h
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/emmintrin.h

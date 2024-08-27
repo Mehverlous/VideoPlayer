@@ -13,6 +13,7 @@ CMakeFiles/videoplayer.dir/main.c.obj: C:/Users/David/Documents/DevProjects/msys
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cairo/cairo-version.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cairo/cairo.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt.h \
+  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_stdio_config.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_wstdlib.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/crtdefs.h \
@@ -762,8 +763,12 @@ CMakeFiles/videoplayer.dir/main.c.obj: C:/Users/David/Documents/DevProjects/msys
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango-version-macros.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pangocairo.h \
+  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h \
+  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread.h \
+  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_compat.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_signal.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_time.h \
+  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_unistd.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sdks/_mingw_ddk.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdio_s.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdlib_s.h \
@@ -778,6 +783,7 @@ CMakeFiles/videoplayer.dir/main.c.obj: C:/Users/David/Documents/DevProjects/msys
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/string.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/swprintf.inl \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/timeb.h \
+  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/time.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/include/vadefs.h \
   C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/emmintrin.h \
@@ -878,6 +884,10 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/gio/gaction
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/gio/gsettings.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt.h:
+
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gquark.h:
+
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/harfbuzz/hb-shape.h:
 
@@ -1087,9 +1097,9 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/gio/gdbusin
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/gio/gtcpwrapperconnection.h:
 
-C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/gio/gdbusobject.h:
-
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/gio/gdbusintrospection.h:
+
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/gio/gdbusobject.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/gio/gdbusobjectmanager.h:
 
@@ -1555,8 +1565,6 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkspinb
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/ghmac.h:
 
-C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkentrybuffer.h:
-
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/ghostutils.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/giochannel.h:
@@ -1600,8 +1608,6 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkmount
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/deprecated/gtkappchooserbutton.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gqsort.h:
-
-C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gquark.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gqueue.h:
 
@@ -1774,6 +1780,8 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphen
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-ray.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-rect.h:
+
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_compat.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-simd4x4f.h:
 
@@ -2043,6 +2051,8 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkemoji
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkentry.h:
 
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkentrybuffer.h:
+
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkeventcontrollerfocus.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkeventcontrollerscroll.h:
@@ -2299,6 +2309,8 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/attributes
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/buffer.h:
 
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h:
+
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/channel_layout.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/dict.h:
@@ -2355,6 +2367,10 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pang
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pangocairo.h:
 
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread.h:
+
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_unistd.h:
+
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/sys/timeb_s.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/signal.h:
@@ -2364,6 +2380,8 @@ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdarg.h:
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdlib.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/include/swprintf.inl:
+
+C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h:
 
 C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/emmintrin.h:
 

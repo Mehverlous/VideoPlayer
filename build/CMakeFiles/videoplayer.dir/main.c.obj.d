@@ -761,6 +761,12 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowcontrols.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowgroup.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowhandle.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_compat.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_unistd.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/imgutils.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixdesc.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/attributes.h \
