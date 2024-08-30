@@ -35,7 +35,7 @@ typedef struct {
 }circ_buf_t;
 
 
-#define frames_to_process 1000
+#define frames_to_process 500
 
 gint timer;
 static gboolean isStarted = FALSE;
@@ -44,6 +44,7 @@ int currentImage = 0;
 static const char *src_filename = "./Documents/RickRoll.mp4";
 circ_buf_t vid_frame_buf;
 GdkPixbuf *currentFrame;
+pthread_mutex_t mutex;
 
 void init_buffer(circ_buf_t *b, int size){
   b->buffer = malloc(sizeof(Frames) * size);
@@ -53,17 +54,17 @@ void init_buffer(circ_buf_t *b, int size){
   b->tail= 0;
 }
 
-bool buffer_empty(circ_buf_t *b){
+gboolean buffer_empty(circ_buf_t *b){
   return(b->num_entries == 0);
 }
 
-bool buffer_full(circ_buf_t *b){
+gboolean buffer_full(circ_buf_t *b){
   return(b->num_entries == b->max_len);
 }
 
-bool enqueue_buffer(circ_buf_t *b, AVFrame *pFrame, int width, int height, int iFrame){
+void enqueue_buffer(circ_buf_t *b, AVFrame *pFrame, int width, int height, int iFrame){
   if(buffer_full(b))
-    return false;
+    return;
 
   av_image_alloc(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
   av_image_copy2(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, pFrame->data, pFrame->linesize, AV_PIX_FMT_RGB24, width, height);
@@ -75,8 +76,6 @@ bool enqueue_buffer(circ_buf_t *b, AVFrame *pFrame, int width, int height, int i
   b->buffer[b->tail].video_dst_data;
   b->num_entries++;
   b->tail = (b->tail + 1) % b->max_len;
-
-  return true;
 }
 
 void dequeue_buffer(circ_buf_t *b){
@@ -114,8 +113,11 @@ static void stop_timer(){
 }
 
 static void update_frame(GtkWidget *darea){
+  pthread_mutex_lock(&mutex);
   dequeue_buffer(&vid_frame_buf);
+  pthread_mutex_unlock(&mutex);
   gtk_widget_queue_draw(darea);
+  
 }
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
@@ -261,7 +263,9 @@ int video_processor(){
               pFrameRGB->linesize);
 
           // Save the frame to the array
+          pthread_mutex_lock(&mutex);
           enqueue_buffer(&vid_frame_buf, pFrameRGB, pCodecCtx->width, pCodecCtx->height, i++);
+          pthread_mutex_unlock(&mutex);
         }
       }
     }
@@ -344,8 +348,8 @@ int video_display(int argc, char **argv){
 }
 
 int main (int argc,char **argv){
-  pthread_t decode;
-  pthread_t display;
+  pthread_t decode, display;
+  pthread_mutex_init(&mutex, NULL);
 
   pthread_create(&decode, NULL, (void *)video_processor, NULL);
   pthread_create(&display, NULL, (void *)video_display, NULL);
@@ -353,5 +357,6 @@ int main (int argc,char **argv){
   pthread_join(decode, NULL);
   pthread_join(display, NULL);
 
+  pthread_mutex_destroy(&mutex);
   return 0;
 }
