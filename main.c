@@ -1,6 +1,8 @@
-#include <cairo/cairo.h>
+#include <cairo/cairo.h> 
 #include <gtk/gtk.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <pthread.h>
 
 #include <libavutil/imgutils.h>
@@ -15,7 +17,6 @@ static void stop_timer();
 static void update_frame(GtkWidget *);
 static void draw_function(GtkDrawingArea *, cairo_t *, int, int, gpointer);
 static void update_buffer(AVFrame *, int, int, int);
-void saveFrame(AVFrame *, int, int, int);
 static void activate(GtkApplication *, gpointer);
 int main(int, char **);
 
@@ -28,22 +29,77 @@ typedef struct Frames{
   int fnum;
 }Frames;
 
-static uint8_t *test_dst_data[4] = {NULL};
-static int      test_dst_linesize[4]; 
+typedef struct {
+  Frames *buffer;
+  int head, tail, num_entries, max_len;
+}circ_buf_t;
+
 
 #define frames_to_process 1000
 
-// static int imgFrameNum = 0;
 gint timer;
 static gboolean isStarted = FALSE;
 struct Frames frames[frames_to_process];
 int currentImage = 0;
 static const char *src_filename = "./Documents/RickRoll.mp4";
+circ_buf_t vid_frame_buf;
 GdkPixbuf *currentFrame;
+
+void init_buffer(circ_buf_t *b, int size){
+  b->buffer = malloc(sizeof(Frames) * size);
+  b->max_len = size;
+  b->num_entries = 0;
+  b->head = 0;
+  b->tail= 0;
+}
+
+bool buffer_empty(circ_buf_t *b){
+  return(b->num_entries == 0);
+}
+
+bool buffer_full(circ_buf_t *b){
+  return(b->num_entries == b->max_len);
+}
+
+bool enqueue_buffer(circ_buf_t *b, AVFrame *pFrame, int width, int height, int iFrame){
+  if(buffer_full(b))
+    return false;
+
+  av_image_alloc(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
+  av_image_copy2(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, pFrame->data, pFrame->linesize, AV_PIX_FMT_RGB24, width, height);
+
+  b->buffer[b->tail].fwidth = width;
+  b->buffer[b->tail].fheight = height;
+  b->buffer[b->tail].fnum = iFrame + 1;
+
+  b->buffer[b->tail].video_dst_data;
+  b->num_entries++;
+  b->tail = (b->tail + 1) % b->max_len;
+
+  return true;
+}
+
+void dequeue_buffer(circ_buf_t *b){
+  if(buffer_empty(b))
+    return;
+
+  currentFrame = gdk_pixbuf_new_from_data(b->buffer[b->head].video_dst_data[0], 
+                                          GDK_COLORSPACE_RGB, 
+                                          FALSE, 
+                                          8, 
+                                          b->buffer[b->head].fwidth, 
+                                          b->buffer[b->head].fheight, 
+                                          b->buffer[b->head].video_dst_linesize[0], 
+                                          NULL, 
+                                          NULL);
+
+  b->head = (b->head + 1) % b->max_len;
+  b->num_entries--;
+}
 
 static void start_timer(GtkWidget *darea){
   if (!isStarted){
-    timer = g_timeout_add(17, (GSourceFunc)update_frame, darea);
+    timer = g_timeout_add(18, (GSourceFunc)update_frame, darea);
     isStarted = TRUE;
     printf("Starting Timer: %d\n", timer);
   }
@@ -58,38 +114,19 @@ static void stop_timer(){
 }
 
 static void update_frame(GtkWidget *darea){
-  currentImage++;
-  if (currentImage >= frames_to_process)
-    currentImage = 0;
+  dequeue_buffer(&vid_frame_buf);
   gtk_widget_queue_draw(darea);
 }
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){
-  currentFrame = gdk_pixbuf_new_from_data(frames[currentImage].video_dst_data[0], 
-                                                      GDK_COLORSPACE_RGB, 
-                                                      FALSE, 
-                                                      8, 
-                                                      frames[currentImage].fwidth, 
-                                                      frames[currentImage].fheight, 
-                                                      frames[currentImage].video_dst_linesize[0], 
-                                                      NULL, 
-                                                      NULL);
   gdk_cairo_set_source_pixbuf(cr, currentFrame, 0, 0);
 
   //paint the current surface containing the current image
   cairo_paint(cr);
 }
 
-void update_buffer(AVFrame *pFrame, int width, int height, int iFrame){
-  av_image_alloc(frames[iFrame].video_dst_data, frames[iFrame].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
-  av_image_copy2(frames[iFrame].video_dst_data, frames[iFrame].video_dst_linesize, pFrame->data, pFrame->linesize, AV_PIX_FMT_RGB24, width, height);
-
-  frames[iFrame].fwidth = width;
-  frames[iFrame].fheight = height;
-  frames[iFrame].fnum = iFrame + 1;
-}
-
 int video_processor(){
+  init_buffer(&vid_frame_buf, frames_to_process);
   
   // Open video file
   AVFormatContext *pFormatCtx = avformat_alloc_context();
@@ -184,7 +221,7 @@ int video_processor(){
   int i = 0;
   
   // Read frames and save first five frames to disk
-  while (av_read_frame(pFormatCtx, pPacket) >= 0 && i < frames_to_process){
+  while (av_read_frame(pFormatCtx, pPacket) >= 0){
     // Is this a packet from the video stream?
     if(pPacket->stream_index == videoStream){
       // Decode video frame  
@@ -195,7 +232,7 @@ int video_processor(){
       
       int frameFinished = 1;
       // Did we get a video frame?
-      while(frameFinished >= 0 && i < frames_to_process) {
+      while(frameFinished >= 0) {
         frameFinished = avcodec_receive_frame(pCodecCtx, pFrame);
         // These two return values are special and mean there is no output
         // frame available, but there were no errors during decoding
@@ -224,7 +261,7 @@ int video_processor(){
               pFrameRGB->linesize);
 
           // Save the frame to the array
-          update_buffer(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i++);
+          enqueue_buffer(&vid_frame_buf, pFrameRGB, pCodecCtx->width, pCodecCtx->height, i++);
         }
       }
     }
