@@ -24,13 +24,16 @@ find_library(AVFORMAT_LIBRARY avformat)
 find_path(AVUTIL_INCLUDE_DIR libavutil/avutil.h)
 find_library(AVUTIL_LIBRARY avutil)
 
+find_path(AVUTIL_INCLUDE_DIR libavutil/imgutils.h)
+find_library(AVUTIL_LIBRARY imgutils)
+
 find_path(AVDEVICE_INCLUDE_DIR libavdevice/avdevice.h)
 find_library(AVDEVICE_LIBRARY avdevice)
 
 find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h)
 find_library(SWSCALE_lIBRARY swscale)
 
-#add_executable(videoplayer demux_decode.c)
+#add_executable(videoplayer test.c)
 add_executable(videoplayer main.c)
 
 

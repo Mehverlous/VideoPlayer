@@ -35,7 +35,7 @@ typedef struct {
 }circ_buf_t;
 
 
-#define frames_to_process 500
+#define frames_to_process 1000
 
 gint timer;
 static gboolean isStarted = FALSE;
@@ -43,7 +43,7 @@ struct Frames frames[frames_to_process];
 int currentImage = 0;
 static const char *src_filename = "./Documents/RickRoll.mp4";
 circ_buf_t vid_frame_buf;
-GdkPixbuf *currentFrame;
+GdkPixbuf *currentFrame = NULL;
 pthread_mutex_t mutex;
 
 void init_buffer(circ_buf_t *b, int size){
@@ -54,17 +54,23 @@ void init_buffer(circ_buf_t *b, int size){
   b->tail= 0;
 }
 
-gboolean buffer_empty(circ_buf_t *b){
-  return(b->num_entries == 0);
+int buffer_empty(circ_buf_t *b){
+  if(b->num_entries == 0)
+    return 1;
+  return 0;
 }
 
-gboolean buffer_full(circ_buf_t *b){
-  return(b->num_entries == b->max_len);
+int buffer_full(circ_buf_t *b){
+  if(b->num_entries == b->max_len)
+    return 1;
+  return 0;
 }
 
 void enqueue_buffer(circ_buf_t *b, AVFrame *pFrame, int width, int height, int iFrame){
-  if(buffer_full(b))
+  if(buffer_full(b) == 1){
+    printf("Buffer full size: %d\n", b->num_entries);
     return;
+  }
 
   av_image_alloc(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
   av_image_copy2(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, pFrame->data, pFrame->linesize, AV_PIX_FMT_RGB24, width, height);
@@ -79,8 +85,10 @@ void enqueue_buffer(circ_buf_t *b, AVFrame *pFrame, int width, int height, int i
 }
 
 void dequeue_buffer(circ_buf_t *b){
-  if(buffer_empty(b))
+  if(buffer_empty(b) == 1){
+    printf("Buffer Empty\n");
     return;
+  }
 
   currentFrame = gdk_pixbuf_new_from_data(b->buffer[b->head].video_dst_data[0], 
                                           GDK_COLORSPACE_RGB, 
@@ -222,7 +230,6 @@ int video_processor(){
 
   int i = 0;
   
-  // Read frames and save first five frames to disk
   while (av_read_frame(pFormatCtx, pPacket) >= 0){
     // Is this a packet from the video stream?
     if(pPacket->stream_index == videoStream){
@@ -293,6 +300,8 @@ int video_processor(){
 
 static void activate(GtkApplication *app, gpointer user_data){
   GtkWidget *window, *vbox, *darea, *da_container, *button_box, *play_button, *pause_button;
+
+  currentFrame = gdk_pixbuf_new_from_file("./Documents/Empty.png", NULL);
 
   //initializing the window
   window = gtk_application_window_new(app);
