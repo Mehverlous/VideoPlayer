@@ -8,7 +8,7 @@
       //"args": ["./Documents/RickRoll.mp4", "test_video", "test_audio"],
       "args": [],
       "stopAtEntry": false,
-      "externalConsole": true,
+      "externalConsole": false,
       "cwd": "c:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer",
       "program": "c:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/build/videoplayer.exe",
       "MIMode": "gdb",
