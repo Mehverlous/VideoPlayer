@@ -44,16 +44,18 @@ static const char *src_filename = "./Documents/RickRoll.mp4";
 circ_buf_t vid_frame_buf;
 GdkPixbuf *currentFrame = NULL;
 pthread_mutex_t mutex;
+struct SwsContext *swsCtx;
 
 static AVFormatContext *fmt_ctx = NULL;
 static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
 static int width, height;
-static enum AVPixelFormat pix_fmt;
 static AVStream *video_stream = NULL, *audio_stream = NULL;
  
 static int video_stream_idx = -1, audio_stream_idx = -1;
 static AVFrame *frame = NULL;
+static AVFrame *frameRGB = NULL;
 static AVPacket *pkt = NULL;
+static AVRational fps; 
 static int video_frame_count = 0;
 static int audio_frame_count = 0;
 
@@ -65,26 +67,20 @@ void init_buffer(circ_buf_t *b, int size){
   b->tail= 0;
 }
 
-int buffer_empty(circ_buf_t *b){
-  if(b->num_entries == 0)
-    return 1;
-  return 0;
+gboolean buffer_empty(circ_buf_t *b){
+  return (b->num_entries == 0);
 }
 
-int buffer_full(circ_buf_t *b){
-  if(b->num_entries == b->max_len)
-    return 1;
-  return 0;
+gboolean buffer_full(circ_buf_t *b){
+  return (b->num_entries > (b->max_len)/2);
 }
 
 void enqueue_buffer(circ_buf_t *b, AVFrame *frame, int iFrame){
-  if(buffer_full(b) == 1){
-    printf("Buffer full size: %d\n", b->num_entries);
+  if(buffer_full(b))
     return;
-  }
 
   av_image_alloc(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
-  av_image_copy2(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, frame->data, frame->linesize, pix_fmt, width, height);
+  av_image_copy2(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, frame->data, frame->linesize, AV_PIX_FMT_RGB24, width, height);
 
   b->buffer[b->tail].fwidth = width;
   b->buffer[b->tail].fheight = height;
@@ -96,10 +92,8 @@ void enqueue_buffer(circ_buf_t *b, AVFrame *frame, int iFrame){
 }
 
 void dequeue_buffer(circ_buf_t *b){
-  if(buffer_empty(b) == 1){
-    printf("Buffer Empty\n");
+  if(buffer_empty(b))
     return;
-  }
 
   currentFrame = gdk_pixbuf_new_from_data(b->buffer[b->head].video_dst_data[0], 
                                           GDK_COLORSPACE_RGB, 
@@ -126,23 +120,45 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
       
   // get all available frames from the decoder
   while(ret >= 0) {
-    ret = avcodec_receive_frame(dec, frame);
-    if(ret < 0){
-      // These two return values are special and mean there is no output
-      // frame available, but there were no errors during decoding
-      if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-        return 0;
+    if(!buffer_full(&vid_frame_buf)){
+      ret = avcodec_receive_frame(dec, frame);
+      if(ret < 0){
+        // These two return values are special and mean there is no output
+        // frame available, but there were no errors during decoding
+        if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+          return 0;
 
-      fprintf(stderr, "Error during decoding");
-      return ret;
+        fprintf(stderr, "Error during decoding");
+        return ret;
+      }
+
+      if(ret >= 0){
+        if(av_image_alloc(frameRGB->data, frameRGB->linesize, video_dec_ctx->width, video_dec_ctx->height, AV_PIX_FMT_RGB24, 1)){
+          // Convert the image from its native format to RGB    
+          sws_scale(swsCtx,
+                    (const uint8_t* const*)frame->data,
+                    frame->linesize,
+                    0,
+                    video_dec_ctx->height,
+                    frameRGB->data,
+                    frameRGB->linesize);
+
+          // Save the frame to the array
+          pthread_mutex_lock(&mutex);
+          enqueue_buffer(&vid_frame_buf, frameRGB, i++);
+          pthread_mutex_unlock(&mutex);
+        }
+        else{
+          fprintf(stderr, "Could not allocate output frame");
+          return -1;
+        }
+      }
+
+      av_frame_unref(frame);
+    }else{
+      continue;
     }
 
-    // Save the frame to the array
-    pthread_mutex_lock(&mutex);
-    enqueue_buffer(&vid_frame_buf, frame, i++);
-    pthread_mutex_unlock(&mutex);
-
-    av_frame_unref(frame);
   }
   return ret;
 }
@@ -221,11 +237,22 @@ int video_processor(){
 
   if (open_codec_context(&video_stream_idx, &video_dec_ctx, fmt_ctx, AVMEDIA_TYPE_VIDEO) >= 0) {
     video_stream = fmt_ctx->streams[video_stream_idx];
+    fps = fmt_ctx->streams[video_stream_idx]->r_frame_rate;
 
     // allocate image where the decoded image will be put
     width = video_dec_ctx->width;
     height = video_dec_ctx->height;
-    pix_fmt = video_dec_ctx->pix_fmt;
+
+    swsCtx = sws_getContext(video_dec_ctx->width,
+                            video_dec_ctx->height,
+                            video_dec_ctx->pix_fmt,
+                            video_dec_ctx->width,
+                            video_dec_ctx->height,
+                            AV_PIX_FMT_RGB24,
+                            SWS_BILINEAR,
+                            NULL,
+                            NULL,
+                            NULL);
 
   }
  
@@ -243,34 +270,44 @@ int video_processor(){
   av_dump_format(fmt_ctx, 0, src_filename, 0);
 
   if (/*!audio_stream &&*/ !video_stream) {
-      fprintf(stderr, "Could not find audio or video stream in the input, aborting\n");
-      ret = 1;
-      goto end;
+    fprintf(stderr, "Could not find audio or video stream in the input, aborting\n");
+    ret = 1;
+    goto end;
   }
 
   frame = av_frame_alloc();
   if (!frame) {
-      fprintf(stderr, "Could not allocate frame\n");
-      ret = AVERROR(ENOMEM);
-      goto end;
+    fprintf(stderr, "Could not allocate frame\n");
+    ret = AVERROR(ENOMEM);
+    goto end;
   }
 
   pkt = av_packet_alloc();
   if (!pkt) {
-      fprintf(stderr, "Could not allocate packet\n");
-      ret = AVERROR(ENOMEM);
-      goto end;
+    fprintf(stderr, "Could not allocate packet\n");
+    ret = AVERROR(ENOMEM);
+    goto end;
   }
 
+  frameRGB = av_frame_alloc();
+  if(!frameRGB){
+    fprintf(stderr, "Could not allocate RGB frame\n");
+    ret = AVERROR(ENOMEM);
+    goto end;
+  }
 
   int i = 0;
   
   while (av_read_frame(fmt_ctx, pkt) >= 0){
-    // Is this a packet from the video stream?
-    if(pkt->stream_index == video_stream_idx)
-      ret = decode_packet(video_dec_ctx, pkt);
-    if(ret < 0)
-      break;
+    //check if the buffer is full 
+      // Is this a packet from the video stream?
+      if(pkt->stream_index == video_stream_idx)
+        ret = decode_packet(video_dec_ctx, pkt);
+
+      av_packet_unref(pkt);
+      if(ret < 0)
+        break;
+
   }
 
   // Flushing the decoders
@@ -281,18 +318,21 @@ int video_processor(){
 
   
   end: 
+    sws_freeContext(swsCtx);
     avcodec_free_context(&video_dec_ctx);
     avcodec_free_context(&audio_dec_ctx);
     avformat_close_input(&fmt_ctx);
     av_packet_free(&pkt);
     av_frame_free(&frame);
+    av_frame_free(&frameRGB);
 
     return ret < 0;
 }
 
 static void start_timer(GtkWidget *darea){
+  double frame_rate = fps.num/fps.den;
   if (!isStarted){
-    timer = g_timeout_add(18, (GSourceFunc)update_frame, darea);
+    timer = g_timeout_add(frame_rate, (GSourceFunc)update_frame, darea);
     isStarted = TRUE;
     printf("Starting Timer: %d\n", timer);
   }
