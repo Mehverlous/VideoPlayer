@@ -1,5 +1,43 @@
 CMakeFiles/videoplayer.dir/main.c.obj: \
  C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\main.c \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdio.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_stdio_config.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_mac.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_secapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/vadefs.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sdks/_mingw_ddk.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_off_t.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/swprintf.inl \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdio_s.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdlib.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_wstdlib.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/syslimits.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/limits.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/crtdefs.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdlib_s.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/malloc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/mm_malloc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/errno.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdbool.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stddef.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/signal.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_signal.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/time.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/timeb.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/sys/timeb_s.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_timeval.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_time.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_compat.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_unistd.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/math.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cairo/cairo.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cairo/cairo-version.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cairo/cairo-features.h \
@@ -11,27 +49,10 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtypes.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/glib-2.0/include/glibconfig.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gmacros.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stddef.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/crtdefs.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_mac.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_secapi.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/vadefs.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sdks/_mingw_ddk.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/syslimits.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/limits.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/float.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gversionmacros.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/glib-visibility.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/time.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/timeb.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/sys/timeb_s.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_timeval.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_time.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/string.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/string_s.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/garray.h \
@@ -46,8 +67,6 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gquark.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gutils.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gbacktrace.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/signal.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_signal.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gbase64.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gbitlock.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gbookmarkfile.h \
@@ -105,12 +124,6 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gstringchunk.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gstrvbuilder.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtestutils.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/errno.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdlib.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_wstdlib.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdlib_s.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/malloc.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/mm_malloc.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gthreadpool.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtimer.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtrashstack.h \
@@ -370,11 +383,6 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango-markup.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango-renderer.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango-utils.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdio.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_stdio_config.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_off_t.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/swprintf.inl \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdio_s.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gdk/gdkconfig.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gdk/gdkenums.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gdk/gdkcairo.h \
@@ -449,11 +457,9 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/mmintrin.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/emmintrin.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-macros.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdbool.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-version-macros.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-version.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-simd4f.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/math.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-simd4x4f.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-vec2.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-vec3.h \
@@ -761,12 +767,6 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowcontrols.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowgroup.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowhandle.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_compat.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_unistd.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/imgutils.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixdesc.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/attributes.h \
@@ -822,4 +822,5 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libswscale/swscale.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libswscale/version_major.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libswscale/version.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libswscale/version.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/portaudio.h

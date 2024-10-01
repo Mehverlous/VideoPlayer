@@ -30,13 +30,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 37,
+				"line" : 40,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 41,
+				"line" : 44,
 				"parent" : 0
 			},
 			{
@@ -244,6 +244,11 @@
 			{
 				"backtrace" : 2,
 				"fragment" : "C:\\Users\\David\\Documents\\DevProjects\\msys64\\mingw64\\lib\\libswscale.dll.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "C:\\Users\\David\\Documents\\DevProjects\\msys64\\mingw64\\lib\\libportaudio.dll.a",
 				"role" : "libraries"
 			},
 			{

@@ -1882,6 +1882,18 @@
 			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/bin/pkg-config.exe"
 		},
 		{
+			"name" : "PORTAUDIO_lIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libportaudio.dll.a"
+		},
+		{
 			"name" : "SWSCALE_INCLUDE_DIR",
 			"properties" : 
 			[

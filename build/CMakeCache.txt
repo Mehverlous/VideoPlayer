@@ -280,6 +280,9 @@ PKG_CONFIG_ARGN:STRING=
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/bin/pkg-config.exe
 
+//Path to a library.
+PORTAUDIO_lIBRARY:FILEPATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libportaudio.dll.a
+
 //Path to a file.
 SWSCALE_INCLUDE_DIR:PATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/include
 
