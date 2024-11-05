@@ -30,7 +30,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 40,
+				"line" : 39,
 				"parent" : 0
 			},
 			{
@@ -280,7 +280,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "main.c",
+			"path" : "test.c",
 			"sourceGroupIndex" : 0
 		}
 	],

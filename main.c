@@ -15,21 +15,6 @@
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 
-#include <portaudio.h>
-#define NUM_SECONDS   (5)
-#define SAMPLE_RATE   (44100)
-#define FRAMES_PER_BUFFER  (64)
-#ifndef M_PI
-#define M_PI  (3.14159265)
-#endif
-#define TABLE_SIZE   (200)
-typedef struct
-{
-    float sine[TABLE_SIZE];
-    int left_phase;
-    int right_phase;
-}
-paTestData;
 
 static void start_timer(GtkWidget *);
 static void stop_timer();
@@ -77,11 +62,6 @@ static AVPacket *pkt = NULL;
 static AVRational fps; 
 static int video_frame_count = 0;
 static int audio_frame_count = 0;
-
-PaStreamParameters outputParameters;
-PaStream *stream;
-PaError err;
-paTestData data;
 
 void init_buffer(circ_buf_t *b, int size){
   b->buffer = malloc(sizeof(Frames) * size);
@@ -133,32 +113,6 @@ void dequeue_buffer(circ_buf_t *b){
   b->num_entries--;
 }
 
-static int patestCallback( const void *inputBuffer, void *outputBuffer,
-                            unsigned long framesPerBuffer,
-                            const PaStreamCallbackTimeInfo* timeInfo,
-                            PaStreamCallbackFlags statusFlags,
-                            void *userData )
-{
-    paTestData *data = (paTestData*)userData;
-    float *out = (float*)outputBuffer;
-    unsigned long i;
-    (void) timeInfo; /* Prevent unused variable warnings. */
-    (void) statusFlags;
-    (void) inputBuffer;
-    
-    for( i=0; i<framesPerBuffer; i++ )
-    {
-        *out++ = data->sine[data->left_phase];  /* left */
-        *out++ = data->sine[data->right_phase];  /* right */
-        data->left_phase += 1;
-        if( data->left_phase >= TABLE_SIZE ) data->left_phase -= TABLE_SIZE;
-        data->right_phase += 3; /* higher pitch so we can distinguish left and right. */
-        if( data->right_phase >= TABLE_SIZE ) data->right_phase -= TABLE_SIZE;
-    }
-    
-    return paContinue;
-}
-
 static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
   int i, ret = 0;
   // submit the packet to the decoder
@@ -202,23 +156,6 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
           fprintf(stderr, "Could not allocate output frame");
           return -1;
         }
-      }else{
-        err = Pa_OpenStream(
-                  &stream,
-                  NULL, /* no input */
-                  &outputParameters,
-                  SAMPLE_RATE,
-                  FRAMES_PER_BUFFER,
-                  paClipOff,      /* we won't output out of range samples so don't bother clipping them */
-                  patestCallback,
-                  &data );
-        if( err != paNoError ) goto error;
-        err = Pa_StartStream( stream );
-        if( err != paNoError ) goto error;
-        printf("Play for %d seconds.\n", NUM_SECONDS );
-        Pa_Sleep(2);
-        err = Pa_StopStream( stream );
-        if( err != paNoError ) goto error;
       }
     }else{
       continue;
@@ -227,12 +164,6 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
     av_frame_unref(frame);
   }
   return ret;
-  error:
-    Pa_Terminate();
-    fprintf( stderr, "An error occured while using the portaudio stream\n" );
-    fprintf( stderr, "Error number: %d\n", err );
-    fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-    return err;
 }
 
 static int open_codec_context(int *stream_idx, AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type){
@@ -328,26 +259,10 @@ int video_processor(){
 
   }
  
-  if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
-    audio_stream = fmt_ctx->streams[audio_stream_idx];
+  // if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
+  //   audio_stream = fmt_ctx->streams[audio_stream_idx];
     
-    printf("PortAudio Test: output sine wave. SR = %d, BufSize = %d\n", SAMPLE_RATE, FRAMES_PER_BUFFER);
-    
-    /* initialise sinusoidal wavetable */
-    for( int i=0; i<TABLE_SIZE; i++ ){
-      data.sine[i] = (float) sin( ((double)i/(double)TABLE_SIZE) * M_PI * 2. );
-    }
-
-    data.left_phase = data.right_phase = 0;
-    
-    err = Pa_Initialize();
-    if( err != paNoError ) goto error;
-    outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
-    outputParameters.channelCount = 2;       /* stereo output */
-    outputParameters.sampleFormat = paFloat32; /* 32 bit floating point output */
-    outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
-    outputParameters.hostApiSpecificStreamInfo = NULL;
-  }
+  // }
 
   // dump info to stderr
   av_dump_format(fmt_ctx, 0, src_filename, 0);
@@ -399,10 +314,6 @@ int video_processor(){
   if(audio_dec_ctx)
     decode_packet(audio_dec_ctx, NULL);
 
-    err = Pa_CloseStream( stream );
-    if( err != paNoError ) goto error;
-    Pa_Terminate();
-
   
   end: 
     sws_freeContext(swsCtx);
@@ -412,12 +323,6 @@ int video_processor(){
     av_packet_free(&pkt);
     av_frame_free(&frame);
     av_frame_free(&frameRGB);
-  error:
-    Pa_Terminate();
-    fprintf( stderr, "An error occured while using the portaudio stream\n" );
-    fprintf( stderr, "Error number: %d\n", err );
-    fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-    return err;
 
     return ret < 0;
 }

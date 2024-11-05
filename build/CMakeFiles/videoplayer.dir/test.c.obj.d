@@ -11,6 +11,14 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_off_t.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/swprintf.inl \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdio_s.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/math.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdlib.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_wstdlib.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/syslimits.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/limits.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/crtdefs.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdlib_s.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/malloc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/mm_malloc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/errno.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/portaudio.h
