@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -15,37 +14,50 @@
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 
+#include <portaudio.h>
 
 static void start_timer(GtkWidget *);
 static void stop_timer();
 static void update_frame(GtkWidget *);
+static void play_audio();
 static void draw_function(GtkDrawingArea *, cairo_t *, int, int, gpointer);
-static void update_buffer(AVFrame *, int, int, int);
 static void activate(GtkApplication *, gpointer);
 int main(int, char **);
 
 //struct that stores the pixbuff data
-typedef struct Frames{
+typedef struct{
   uint8_t *video_dst_data[4];
   int video_dst_linesize[4];
   int fwidth; 
   int fheight; 
   int fnum;
-}Frames;
+}Video_Frames;
+
+typedef struct{
+  uint8_t *audio_data[4];
+  int audio_samples;
+  int a_num;
+}Audio_Frames;
 
 typedef struct {
-  Frames *buffer;
+  Video_Frames *buffer;
   int head, tail, num_entries, max_len;
-}circ_buf_t;
+}circ_buf_v;
+
+typedef struct{
+  Audio_Frames *buffer;
+  int head, tail, num_entries, max_len;
+}circ_buf_a;
 
 #define frames_to_process 1000
 
-gint timer;
+gint vid_timer;
+gint aud_timer;
 static gboolean isStarted = FALSE;
-struct Frames frames[frames_to_process];
 int currentImage = 0;
 static const char *src_filename = "./Documents/RickRoll.mp4";
-circ_buf_t vid_frame_buf;
+circ_buf_v vid_frame_buf;
+circ_buf_a aud_frame_buf;
 GdkPixbuf *currentFrame = NULL;
 pthread_mutex_t mutex;
 struct SwsContext *swsCtx;
@@ -63,24 +75,38 @@ static AVRational fps;
 static int video_frame_count = 0;
 static int audio_frame_count = 0;
 
-void init_buffer(circ_buf_t *b, int size){
-  b->buffer = malloc(sizeof(Frames) * size);
+static PaStream *pa_stream = NULL;
+static PaError pa_err;
+static const int sample_rate = 44100;
+static const int channels = 2;
+static const PaSampleFormat pa_sample_fmt = paFloat32;
+
+void init_video_buffer(circ_buf_v *b, int size){
+  b->buffer = malloc(sizeof(Video_Frames) * size);
   b->max_len = size;
   b->num_entries = 0;
   b->head = 0;
   b->tail= 0;
 }
 
-gboolean buffer_empty(circ_buf_t *b){
+void init_audio_buffer(circ_buf_a *b, int size){
+  b->buffer = malloc(sizeof(Audio_Frames) * size);
+  b->max_len = size;
+  b->num_entries = 0;
+  b->head = 0;
+  b->tail= 0;
+}
+
+gboolean video_buffer_empty(circ_buf_v *b){
   return (b->num_entries == 0);
 }
 
-gboolean buffer_full(circ_buf_t *b){
+gboolean video_buffer_full(circ_buf_v *b){
   return (b->num_entries > (b->max_len)/2);
 }
 
-void enqueue_buffer(circ_buf_t *b, AVFrame *frame, int iFrame){
-  if(buffer_full(b))
+void enqueue_video_buffer(circ_buf_v *b, AVFrame *frame, int iFrame){
+  if(video_buffer_full(b))
     return;
 
   av_image_alloc(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
@@ -95,8 +121,8 @@ void enqueue_buffer(circ_buf_t *b, AVFrame *frame, int iFrame){
   b->tail = (b->tail + 1) % b->max_len;
 }
 
-void dequeue_buffer(circ_buf_t *b){
-  if(buffer_empty(b))
+void dequeue_video_buffer(circ_buf_v *b){
+  if(video_buffer_empty(b))
     return;
 
   currentFrame = gdk_pixbuf_new_from_data(b->buffer[b->head].video_dst_data[0], 
@@ -113,6 +139,45 @@ void dequeue_buffer(circ_buf_t *b){
   b->num_entries--;
 }
 
+gboolean audio_buffer_empty(circ_buf_a *b){
+    return (b->num_entries == 0);
+}
+
+gboolean audio_buffer_full(circ_buf_a *b){
+    return (b->num_entries > (b->max_len)/2);
+}
+
+void enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame, int iFrame){
+    if(audio_buffer_full(b))
+        return;
+
+    for (int i = 0; i < 4; i++){
+        b->buffer[b->tail].audio_data[i] = frame->extended_data[i];
+    }
+
+    //memcpy(b->buffer[b->tail].audio_data, frame->extended_data[0], sizeof(uint8_t)*4);
+
+    b->buffer[b->tail].audio_samples = frame->nb_samples;
+    b->buffer[b->tail].a_num = iFrame + 1;
+    b->num_entries++;
+    b->tail = (b->tail + 1) % b->max_len;
+}
+
+void dequeue_audio_buffer(circ_buf_a *b){
+    if(audio_buffer_empty(b))
+      return;
+
+    //this is where you will write to the pa_stream
+    pa_err = Pa_WriteStream(pa_stream, frame->extended_data[0], frame->nb_samples);
+    if (pa_err != paNoError) {
+      fprintf(stderr, "Error writing audio to PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
+      exit(EXIT_FAILURE);
+    }
+    
+    b->head = (b->head + 1) % b->max_len;
+    b->num_entries--;
+}
+
 static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
   int i, ret = 0;
   // submit the packet to the decoder
@@ -124,7 +189,7 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
       
   // get all available frames from the decoder
   while(ret >= 0) {
-    if(!buffer_full(&vid_frame_buf)){
+    if(!video_buffer_full(&vid_frame_buf)){
       ret = avcodec_receive_frame(dec, frame);
       if(ret < 0){
         // These two return values are special and mean there is no output
@@ -149,13 +214,17 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
 
           // Save the frame to the array
           pthread_mutex_lock(&mutex);
-          enqueue_buffer(&vid_frame_buf, frameRGB, i++);
+          enqueue_video_buffer(&vid_frame_buf, frameRGB, i++);
           pthread_mutex_unlock(&mutex);
         }
         else{
           fprintf(stderr, "Could not allocate output frame");
           return -1;
         }
+      }else{
+        pthread_mutex_lock(&mutex);
+        enqueue_audio_buffer(&aud_frame_buf, frame, i++);
+        pthread_mutex_unlock(&mutex);
       }
     }else{
       continue;
@@ -218,7 +287,8 @@ static int open_codec_context(int *stream_idx, AVCodecContext **dec_ctx, AVForma
 int video_processor(){
   int ret = 0;
 
-  init_buffer(&vid_frame_buf, frames_to_process);
+  init_video_buffer(&vid_frame_buf, frames_to_process);
+  init_audio_buffer(&aud_frame_buf, frames_to_process);
   
   // Open video file and allocate format context
   fmt_ctx = avformat_alloc_context();
@@ -256,13 +326,32 @@ int video_processor(){
                             NULL,
                             NULL,
                             NULL);
-
   }
  
-  // if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
-  //   audio_stream = fmt_ctx->streams[audio_stream_idx];
+  if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
+    audio_stream = fmt_ctx->streams[audio_stream_idx];
     
-  // }
+    // Initialize PortAudio
+    pa_err = Pa_Initialize();
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error initializing PortAudio (%s)\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
+
+    // Create output stream
+    pa_err = Pa_OpenDefaultStream(&pa_stream, 0, channels, pa_sample_fmt, sample_rate, paFramesPerBufferUnspecified, NULL, NULL);
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error creating PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
+
+    // Start output stream
+    pa_err = Pa_StartStream(pa_stream);
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error starting PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
+  }
 
   // dump info to stderr
   av_dump_format(fmt_ctx, 0, src_filename, 0);
@@ -330,26 +419,34 @@ int video_processor(){
 static void start_timer(GtkWidget *darea){
   double frame_rate = fps.num/fps.den;
   if (!isStarted){
-    timer = g_timeout_add(frame_rate, (GSourceFunc)update_frame, darea);
+    vid_timer = g_timeout_add(frame_rate, (GSourceFunc)update_frame, darea);
+    aud_timer = g_timeout_add(100, (GSourceFunc)play_audio, NULL);
     isStarted = TRUE;
-    printf("Starting Timer: %d\n", timer);
+    printf("Starting Timer: %d\nStarting Timer2: %d\n", vid_timer, aud_timer);
   }
 }
 
 static void stop_timer(){
   if(isStarted){
-    g_source_remove(timer);
+    g_source_remove(vid_timer);
+    g_source_remove(aud_timer);
     isStarted = FALSE;
-    printf("Stopping Timer: %d\n", timer);
+    printf("Stopping Timer: %d\nStopping Timer2: %d\n", vid_timer, aud_timer);
   }
 }
 
 static void update_frame(GtkWidget *darea){
   pthread_mutex_lock(&mutex);
-  dequeue_buffer(&vid_frame_buf);
+  dequeue_video_buffer(&vid_frame_buf);
   pthread_mutex_unlock(&mutex);
   gtk_widget_queue_draw(darea);
   
+}
+
+static void play_audio(){
+  pthread_mutex_lock(&mutex);
+  dequeue_audio_buffer(&aud_frame_buf);
+  pthread_mutex_unlock(&mutex);
 }
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer data){

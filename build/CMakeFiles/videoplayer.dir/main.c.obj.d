@@ -822,4 +822,5 @@ CMakeFiles/videoplayer.dir/main.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libswscale/swscale.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libswscale/version_major.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libswscale/version.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libswscale/version.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/portaudio.h

@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/test.c" "CMakeFiles/videoplayer.dir/test.c.obj" "gcc" "CMakeFiles/videoplayer.dir/test.c.obj.d"
+  "C:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/main.c" "CMakeFiles/videoplayer.dir/main.c.obj" "gcc" "CMakeFiles/videoplayer.dir/main.c.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

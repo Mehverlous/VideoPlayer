@@ -6,6 +6,7 @@
       "type": "cppdbg",
       "request": "launch",
       //"args": ["./Documents/RickRoll.mp4", "test_video", "test_audio"],
+      //"args": ["./Documents/RickRoll.mp4"],
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,

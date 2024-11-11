@@ -36,8 +36,8 @@ find_library(SWSCALE_lIBRARY swscale)
 find_path(GTK3_INCLUDE_DIRS portaudio.h)
 find_library(PORTAUDIO_lIBRARY portaudio)
 
-add_executable(videoplayer test.c)
-#add_executable(videoplayer main.c)
+#add_executable(videoplayer test.c)
+add_executable(videoplayer main.c)
 
 
 #set_target_properties(TutorialApp PROPERTIES WIN32_EXECUTABLE true)  # If you dont want console to run with your .exe
