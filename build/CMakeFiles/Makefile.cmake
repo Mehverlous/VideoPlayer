@@ -20,6 +20,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/GNU-C.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/GNU-CXX.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/GNU.cmake"
+  "C:/Program Files/CMake/share/cmake-3.30/Modules/FeatureSummary.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageMessage.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPkgConfig.cmake"
@@ -37,6 +38,17 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.30.2/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.30.2/CMakeRCCompiler.cmake"
   "CMakeFiles/3.30.2/CMakeSystem.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2Config.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2ConfigVersion.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2Targets-release.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2Targets.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2mainTargets-release.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2mainTargets.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2staticTargets-release.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2staticTargets.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2testTargets-release.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2testTargets.cmake"
+  "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/sdlfind.cmake"
   )
 
 # The corresponding makefile is:

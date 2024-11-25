@@ -33,11 +33,11 @@ typedef struct{
   int fnum;
 }Video_Frames;
 
-typedef struct{
-  uint8_t *audio_data[4];
-  int audio_samples;
-  int a_num;
-}Audio_Frames;
+typedef struct {
+    float *audio_data;
+    int audio_samples;
+    int a_num;
+} Audio_Frames;
 
 typedef struct {
   Video_Frames *buffer;
@@ -49,7 +49,9 @@ typedef struct{
   int head, tail, num_entries, max_len;
 }circ_buf_a;
 
-#define frames_to_process 1000
+#define FRAMES_TO_PROCESS 1000
+#define FRAMES_PER_BUFFER 2048
+#define MIN_AUDIO_BUFFER_SIZE 5
 
 gint vid_timer;
 gint aud_timer;
@@ -109,6 +111,8 @@ void enqueue_video_buffer(circ_buf_v *b, AVFrame *frame, int iFrame){
   if(video_buffer_full(b))
     return;
 
+  pthread_mutex_lock(&mutex);
+
   av_image_alloc(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, width, height, AV_PIX_FMT_RGB24, 1);
   av_image_copy2(b->buffer[b->tail].video_dst_data, b->buffer[b->tail].video_dst_linesize, frame->data, frame->linesize, AV_PIX_FMT_RGB24, width, height);
 
@@ -119,24 +123,8 @@ void enqueue_video_buffer(circ_buf_v *b, AVFrame *frame, int iFrame){
   b->buffer[b->tail].video_dst_data;
   b->num_entries++;
   b->tail = (b->tail + 1) % b->max_len;
-}
 
-void dequeue_video_buffer(circ_buf_v *b){
-  if(video_buffer_empty(b))
-    return;
-
-  currentFrame = gdk_pixbuf_new_from_data(b->buffer[b->head].video_dst_data[0], 
-                                          GDK_COLORSPACE_RGB, 
-                                          FALSE, 
-                                          8, 
-                                          b->buffer[b->head].fwidth, 
-                                          b->buffer[b->head].fheight, 
-                                          b->buffer[b->head].video_dst_linesize[0], 
-                                          NULL, 
-                                          NULL);
-
-  b->head = (b->head + 1) % b->max_len;
-  b->num_entries--;
+  pthread_mutex_unlock(&mutex);
 }
 
 gboolean audio_buffer_empty(circ_buf_a *b){
@@ -147,35 +135,31 @@ gboolean audio_buffer_full(circ_buf_a *b){
     return (b->num_entries > (b->max_len)/2);
 }
 
-void enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame, int iFrame){
-    if(audio_buffer_full(b))
-        return;
+void enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame, int iFrame) {
+  if(audio_buffer_full(b))
+    return;
 
-    for (int i = 0; i < 4; i++){
-        b->buffer[b->tail].audio_data[i] = frame->extended_data[i];
-    }
+  pthread_mutex_lock(&mutex);
+  
+  // Allocate memory for the audio data
+  int sample_size = frame->nb_samples * channels * sizeof(float);
+  b->buffer[b->tail].audio_data = (float*)malloc(sample_size);
+  
+  // Convert audio data to float format
+  float *float_data = (float*)b->buffer[b->tail].audio_data;
+  int16_t *int_data = (int16_t*)frame->data[0];
+  
+  // Convert and interleave audio samples
+  for(int i = 0; i < frame->nb_samples * channels; i++) {
+    float_data[i] = int_data[i] / 32768.0f;  // Convert to float in range [-1,1]
+  }
 
-    //memcpy(b->buffer[b->tail].audio_data, frame->extended_data[0], sizeof(uint8_t)*4);
+  b->buffer[b->tail].audio_samples = frame->nb_samples;
+  b->buffer[b->tail].a_num = iFrame + 1;
+  b->num_entries++;
+  b->tail = (b->tail + 1) % b->max_len;
 
-    b->buffer[b->tail].audio_samples = frame->nb_samples;
-    b->buffer[b->tail].a_num = iFrame + 1;
-    b->num_entries++;
-    b->tail = (b->tail + 1) % b->max_len;
-}
-
-void dequeue_audio_buffer(circ_buf_a *b){
-    if(audio_buffer_empty(b))
-      return;
-
-    //this is where you will write to the pa_stream
-    pa_err = Pa_WriteStream(pa_stream, frame->extended_data[0], frame->nb_samples);
-    if (pa_err != paNoError) {
-      fprintf(stderr, "Error writing audio to PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
-      exit(EXIT_FAILURE);
-    }
-    
-    b->head = (b->head + 1) % b->max_len;
-    b->num_entries--;
+  pthread_mutex_unlock(&mutex);
 }
 
 static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
@@ -189,7 +173,7 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
       
   // get all available frames from the decoder
   while(ret >= 0) {
-    if(!video_buffer_full(&vid_frame_buf)){
+    if(!video_buffer_full(&vid_frame_buf) || !audio_buffer_full(&aud_frame_buf)){
       ret = avcodec_receive_frame(dec, frame);
       if(ret < 0){
         // These two return values are special and mean there is no output
@@ -213,18 +197,14 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
                     frameRGB->linesize);
 
           // Save the frame to the array
-          pthread_mutex_lock(&mutex);
           enqueue_video_buffer(&vid_frame_buf, frameRGB, i++);
-          pthread_mutex_unlock(&mutex);
         }
         else{
           fprintf(stderr, "Could not allocate output frame");
           return -1;
         }
       }else{
-        pthread_mutex_lock(&mutex);
         enqueue_audio_buffer(&aud_frame_buf, frame, i++);
-        pthread_mutex_unlock(&mutex);
       }
     }else{
       continue;
@@ -284,143 +264,13 @@ static int open_codec_context(int *stream_idx, AVCodecContext **dec_ctx, AVForma
     return 0;
 }
 
-int video_processor(){
-  int ret = 0;
-
-  init_video_buffer(&vid_frame_buf, frames_to_process);
-  init_audio_buffer(&aud_frame_buf, frames_to_process);
-  
-  // Open video file and allocate format context
-  fmt_ctx = avformat_alloc_context();
-  if(!fmt_ctx){
-    fprintf(stderr, "Could not allocate memory for format context");
-    return -1;
-  }
-
-  if(avformat_open_input(&fmt_ctx, src_filename, NULL, NULL) != 0){
-    fprintf(stderr, "Cannot open file");
-    return -1;
-  }
-  
-  // Retrieve stream information
-  if(avformat_find_stream_info(fmt_ctx, NULL) < 0){
-    fprintf(stderr, "Could not find stream information");
-    return -1;
-  }
-
-  if (open_codec_context(&video_stream_idx, &video_dec_ctx, fmt_ctx, AVMEDIA_TYPE_VIDEO) >= 0) {
-    video_stream = fmt_ctx->streams[video_stream_idx];
-    fps = fmt_ctx->streams[video_stream_idx]->r_frame_rate;
-
-    // allocate image where the decoded image will be put
-    width = video_dec_ctx->width;
-    height = video_dec_ctx->height;
-
-    swsCtx = sws_getContext(video_dec_ctx->width,
-                            video_dec_ctx->height,
-                            video_dec_ctx->pix_fmt,
-                            video_dec_ctx->width,
-                            video_dec_ctx->height,
-                            AV_PIX_FMT_RGB24,
-                            SWS_BILINEAR,
-                            NULL,
-                            NULL,
-                            NULL);
-  }
- 
-  if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
-    audio_stream = fmt_ctx->streams[audio_stream_idx];
-    
-    // Initialize PortAudio
-    pa_err = Pa_Initialize();
-    if (pa_err != paNoError) {
-        fprintf(stderr, "Error initializing PortAudio (%s)\n", Pa_GetErrorText(pa_err));
-        return 1;
-    }
-
-    // Create output stream
-    pa_err = Pa_OpenDefaultStream(&pa_stream, 0, channels, pa_sample_fmt, sample_rate, paFramesPerBufferUnspecified, NULL, NULL);
-    if (pa_err != paNoError) {
-        fprintf(stderr, "Error creating PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
-        return 1;
-    }
-
-    // Start output stream
-    pa_err = Pa_StartStream(pa_stream);
-    if (pa_err != paNoError) {
-        fprintf(stderr, "Error starting PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
-        return 1;
-    }
-  }
-
-  // dump info to stderr
-  av_dump_format(fmt_ctx, 0, src_filename, 0);
-
-  if (/*!audio_stream &&*/ !video_stream) {
-    fprintf(stderr, "Could not find audio or video stream in the input, aborting\n");
-    ret = 1;
-    goto end;
-  }
-
-  frame = av_frame_alloc();
-  if (!frame) {
-    fprintf(stderr, "Could not allocate frame\n");
-    ret = AVERROR(ENOMEM);
-    goto end;
-  }
-
-  pkt = av_packet_alloc();
-  if (!pkt) {
-    fprintf(stderr, "Could not allocate packet\n");
-    ret = AVERROR(ENOMEM);
-    goto end;
-  }
-
-  frameRGB = av_frame_alloc();
-  if(!frameRGB){
-    fprintf(stderr, "Could not allocate RGB frame\n");
-    ret = AVERROR(ENOMEM);
-    goto end;
-  }
-
-  int i = 0;
-  
-  while (av_read_frame(fmt_ctx, pkt) >= 0){
-    // Is this a packet from the video stream?
-    if(pkt->stream_index == video_stream_idx)
-      ret = decode_packet(video_dec_ctx, pkt);
-    if(pkt->stream_index == audio_stream_idx)
-      ret = decode_packet(audio_dec_ctx, pkt);
-
-    av_packet_unref(pkt);
-    if(ret < 0)
-      break;
-  }
-
-  // Flushing the decoders
-  if(video_dec_ctx)
-    decode_packet(video_dec_ctx, NULL);
-  if(audio_dec_ctx)
-    decode_packet(audio_dec_ctx, NULL);
-
-  
-  end: 
-    sws_freeContext(swsCtx);
-    avcodec_free_context(&video_dec_ctx);
-    avcodec_free_context(&audio_dec_ctx);
-    avformat_close_input(&fmt_ctx);
-    av_packet_free(&pkt);
-    av_frame_free(&frame);
-    av_frame_free(&frameRGB);
-
-    return ret < 0;
-}
-
 static void start_timer(GtkWidget *darea){
   double frame_rate = fps.num/fps.den;
+  double interval = (FRAMES_PER_BUFFER * 1000) / sample_rate;
+
   if (!isStarted){
     vid_timer = g_timeout_add(frame_rate, (GSourceFunc)update_frame, darea);
-    aud_timer = g_timeout_add(100, (GSourceFunc)play_audio, NULL);
+    aud_timer = g_timeout_add(interval, (GSourceFunc)play_audio, NULL);
     isStarted = TRUE;
     printf("Starting Timer: %d\nStarting Timer2: %d\n", vid_timer, aud_timer);
   }
@@ -437,15 +287,60 @@ static void stop_timer(){
 
 static void update_frame(GtkWidget *darea){
   pthread_mutex_lock(&mutex);
-  dequeue_video_buffer(&vid_frame_buf);
+
+  if(video_buffer_empty(&vid_frame_buf))
+    return;
+
+  currentFrame = gdk_pixbuf_new_from_data(vid_frame_buf.buffer[vid_frame_buf.head].video_dst_data[0], 
+                                          GDK_COLORSPACE_RGB, 
+                                          FALSE, 
+                                          8, 
+                                          vid_frame_buf.buffer[vid_frame_buf.head].fwidth, 
+                                          vid_frame_buf.buffer[vid_frame_buf.head].fheight, 
+                                          vid_frame_buf.buffer[vid_frame_buf.head].video_dst_linesize[0], 
+                                          NULL, 
+                                          NULL);
+
+  vid_frame_buf.head = (vid_frame_buf.head + 1) % vid_frame_buf.max_len;
+  vid_frame_buf.num_entries--;
   pthread_mutex_unlock(&mutex);
+
   gtk_widget_queue_draw(darea);
   
 }
 
-static void play_audio(){
+static void play_audio() {
+  static gboolean audio_started = FALSE;
   pthread_mutex_lock(&mutex);
-  dequeue_audio_buffer(&aud_frame_buf);
+  
+  // Wait for buffer to fill before starting playback
+  if (!audio_started && aud_frame_buf.num_entries >= MIN_AUDIO_BUFFER_SIZE) {
+      audio_started = TRUE;
+  }
+  
+  if (audio_started && !audio_buffer_empty(&aud_frame_buf)) {
+    if (Pa_IsStreamActive(pa_stream)) {
+      pa_err = Pa_WriteStream(pa_stream, 
+                            aud_frame_buf.buffer[aud_frame_buf.head].audio_data,
+                            aud_frame_buf.buffer[aud_frame_buf.head].audio_samples);
+      
+      if (pa_err == paOutputUnderflowed) {
+        // Handle underflow more gracefully
+        printf("Audio buffer underflow detected\n");
+        if (aud_frame_buf.num_entries < MIN_AUDIO_BUFFER_SIZE) {
+          audio_started = FALSE;  // Reset and wait for buffer to fill
+        }
+      } else if (pa_err != paNoError) {
+        fprintf(stderr, "PortAudio error: %s\n", Pa_GetErrorText(pa_err));
+      }
+    }
+      
+    // Free the audio data after playing
+    free(aud_frame_buf.buffer[aud_frame_buf.head].audio_data);
+    aud_frame_buf.head = (aud_frame_buf.head + 1) % aud_frame_buf.max_len;
+    aud_frame_buf.num_entries--;
+  }
+  
   pthread_mutex_unlock(&mutex);
 }
 
@@ -512,6 +407,161 @@ int video_display(int argc, char **argv){
   g_object_unref(app);
 
   return status;
+}
+
+int video_processor(){
+  int ret = 0;
+
+  init_video_buffer(&vid_frame_buf, FRAMES_TO_PROCESS);
+  init_audio_buffer(&aud_frame_buf, FRAMES_TO_PROCESS);
+  
+  // Open video file and allocate format context
+  fmt_ctx = avformat_alloc_context();
+  if(!fmt_ctx){
+    fprintf(stderr, "Could not allocate memory for format context");
+    return -1;
+  }
+
+  if(avformat_open_input(&fmt_ctx, src_filename, NULL, NULL) != 0){
+    fprintf(stderr, "Cannot open file");
+    return -1;
+  }
+  
+  // Retrieve stream information
+  if(avformat_find_stream_info(fmt_ctx, NULL) < 0){
+    fprintf(stderr, "Could not find stream information");
+    return -1;
+  }
+
+  if (open_codec_context(&video_stream_idx, &video_dec_ctx, fmt_ctx, AVMEDIA_TYPE_VIDEO) >= 0) {
+    video_stream = fmt_ctx->streams[video_stream_idx];
+    fps = fmt_ctx->streams[video_stream_idx]->r_frame_rate;
+
+    // allocate image where the decoded image will be put
+    width = video_dec_ctx->width;
+    height = video_dec_ctx->height;
+
+    swsCtx = sws_getContext(video_dec_ctx->width,
+                            video_dec_ctx->height,
+                            video_dec_ctx->pix_fmt,
+                            video_dec_ctx->width,
+                            video_dec_ctx->height,
+                            AV_PIX_FMT_RGB24,
+                            SWS_BILINEAR,
+                            NULL,
+                            NULL,
+                            NULL);
+
+    printf("Successfully openned video context\n");
+  }
+ 
+  if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
+    audio_stream = fmt_ctx->streams[audio_stream_idx];
+    
+    pa_err = Pa_Initialize();
+    if (pa_err != paNoError) {
+        fprintf(stderr, "PortAudio init error: %s\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
+
+    PaStreamParameters outputParameters;
+    outputParameters.device = Pa_GetDefaultOutputDevice();
+    outputParameters.channelCount = channels;
+    outputParameters.sampleFormat = paFloat32;  // Using float format
+    outputParameters.suggestedLatency = 
+        Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
+    outputParameters.hostApiSpecificStreamInfo = NULL;
+
+    // Increased buffer size for more stable playback
+    unsigned long framesPerBuffer = FRAMES_PER_BUFFER;
+    
+    pa_err = Pa_OpenStream(&pa_stream,
+                          NULL,
+                          &outputParameters,
+                          sample_rate,
+                          framesPerBuffer,
+                          paClipOff | paDitherOff,  // Added flags
+                          NULL,
+                          NULL);
+    
+    if (pa_err != paNoError) {
+        fprintf(stderr, "PortAudio stream error: %s\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
+
+    pa_err = Pa_StartStream(pa_stream);
+    if (pa_err != paNoError) {
+        fprintf(stderr, "PortAudio start error: %s\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
+
+    printf("Successfully openned audio context\n");
+  }
+  // dump info to stderr
+  av_dump_format(fmt_ctx, 0, src_filename, 0);
+  printf("\n");
+
+  if (/*!audio_stream &&*/ !video_stream) {
+    fprintf(stderr, "Could not find audio or video stream in the input, aborting\n");
+    ret = 1;
+    goto end;
+  }
+
+  frame = av_frame_alloc();
+  if (!frame) {
+    fprintf(stderr, "Could not allocate frame\n");
+    ret = AVERROR(ENOMEM);
+    goto end;
+  }
+
+  pkt = av_packet_alloc();
+  if (!pkt) {
+    fprintf(stderr, "Could not allocate packet\n");
+    ret = AVERROR(ENOMEM);
+    goto end;
+  }
+
+  frameRGB = av_frame_alloc();
+  if(!frameRGB){
+    fprintf(stderr, "Could not allocate RGB frame\n");
+    ret = AVERROR(ENOMEM);
+    goto end;
+  }
+
+  int i = 0;
+  
+  while (av_read_frame(fmt_ctx, pkt) >= 0){
+    // Is this a packet from the video stream?
+    if(pkt->stream_index == video_stream_idx)
+      ret = decode_packet(video_dec_ctx, pkt);
+    if(pkt->stream_index == audio_stream_idx)
+      ret = decode_packet(audio_dec_ctx, pkt);
+
+    av_packet_unref(pkt);
+    if(ret < 0)
+      break;
+  }
+
+  // Flushing the decoders
+  if(video_dec_ctx)
+    decode_packet(video_dec_ctx, NULL);
+  if(audio_dec_ctx)
+    decode_packet(audio_dec_ctx, NULL);
+
+  Pa_StopStream(pa_stream);
+  Pa_CloseStream(pa_stream);
+  Pa_Terminate();
+  
+  end: 
+    sws_freeContext(swsCtx);
+    avcodec_free_context(&video_dec_ctx);
+    avcodec_free_context(&audio_dec_ctx);
+    avformat_close_input(&fmt_ctx);
+    av_packet_free(&pkt);
+    av_frame_free(&frame);
+    av_frame_free(&frameRGB);
+
+    return ret < 0;
 }
 
 int main (int argc,char **argv){

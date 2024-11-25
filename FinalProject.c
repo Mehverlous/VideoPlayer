@@ -1,79 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <portaudio.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/samplefmt.h>
 #include <libavutil/timestamp.h>
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <gtk/gtk.h>
-#include <SDL2/SDL.h>
-
-#define FRAMES_TO_PROCESS 1000
  
-//struct that stores the pixbuff data
-typedef struct {
-    uint8_t *audio_data[4];
-    int audio_samples;
-    int a_num;
-} Audio_Frames;
-
-typedef struct{
-  Audio_Frames *buffer;
-  int head, tail, num_entries, max_len;
-}circ_buf_a;
-
 static AVFormatContext *fmt_ctx = NULL;
-static AVCodecContext *video_dec_ctx = NULL, *audio_dec_ctx;
+static AVCodecContext *audio_dec_ctx;
 static int width, height;
-static enum AVPixelFormat pix_fmt;
-static AVStream *video_stream = NULL, *audio_stream = NULL;
-static const char *src_filename = "./Documents/RickRoll.mp4";
-
-circ_buf_a aud_frame_buf;
+static AVStream *audio_stream = NULL;
+static const char *src_filename = NULL;
  
-static uint8_t *video_dst_data[4] = {NULL};
-static int      video_dst_linesize[4];
-static int video_dst_bufsize;
- 
-static int video_stream_idx = -1, audio_stream_idx = -1;
+static int audio_stream_idx = -1;
 static AVFrame *frame = NULL;
 static AVPacket *pkt = NULL;
-static int video_frame_count = 0;
 static int audio_frame_count = 0;
 
-void init_audio_buffer(circ_buf_a *b, int size){
-  b->buffer = malloc(sizeof(Audio_Frames) * size);
-  b->max_len = size;
-  b->num_entries = 0;
-  b->head = 0;
-  b->tail= 0;
-}
+static PaStream *pa_stream = NULL;
+static PaError pa_err;
+static const int sample_rate = 44100;
+static const int channels = 2;
+static const PaSampleFormat pa_sample_fmt = paFloat32;
+ 
 
-gboolean audio_buffer_empty(circ_buf_a *b){
-    return (b->num_entries == 0);
-}
+ 
+static int output_audio_frame(AVFrame *frame)
+{
+    printf("audio_frame n:%d nb_samples:%d pts:%s\n",
+           audio_frame_count++, frame->nb_samples,
+           av_ts2timestr(frame->pts, &audio_dec_ctx->time_base));
 
-gboolean audio_buffer_full(circ_buf_a *b){
-    return (b->num_entries > (b->max_len)/2);
-}
-
-void enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame, int iFrame){
-    if(audio_buffer_full(b))
-        return;
-
-    for (int i = 0; i < 4; i++){
-        b->buffer[b->tail].audio_data[i] = frame->extended_data[i];
+    pa_err = Pa_WriteStream(pa_stream, frame->extended_data[0], frame->nb_samples * av_get_bytes_per_sample(frame->format));
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error writing audio to PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
+        return -1;
     }
-
-    //memcpy(b->buffer[b->tail].audio_data, frame->extended_data[0], sizeof(uint8_t)*4);
-
-    b->buffer[b->tail].audio_samples = frame->nb_samples;
-    b->buffer[b->tail].a_num = iFrame + 1;
-    b->num_entries++;
-    b->tail = (b->tail + 1) % b->max_len;
+ 
+    return 0;
 }
-
+ 
 static int decode_packet(AVCodecContext *dec, const AVPacket *pkt)
 {
-    int i, ret = 0;
+    int ret = 0;
  
     // submit the packet to the decoder
     ret = avcodec_send_packet(dec, pkt);
@@ -96,13 +66,15 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt)
         }
  
         // write the frame data to output file
-        if (dec->codec->type == AVMEDIA_TYPE_AUDIO)
-            enqueue_audio_buffer(&aud_frame_buf, frame, i++);
+        if (!(dec->codec->type == AVMEDIA_TYPE_VIDEO))
+            ret = output_audio_frame(frame);
  
         av_frame_unref(frame);
+        if (ret < 0)
+            return ret;
     }
  
-    return ret;
+    return 0;
 }
  
 static int open_codec_context(int *stream_idx,
@@ -185,12 +157,37 @@ static int get_format_from_sample_fmt(const char **fmt,
     return -1;
 }
  
-int main (int argc, char *argv[])
+int main (int argc, char **argv)
 {
     int ret = 0;
+ 
+    if (argc != 2) {
+        fprintf(stderr, "usage: %s  input_file audio_output_file\n", argv[0]);
+        exit(1);
+    }
+    src_filename = argv[1];
 
-    init_audio_buffer(&aud_frame_buf, FRAMES_TO_PROCESS);
+    // Initialize PortAudio
+    pa_err = Pa_Initialize();
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error initializing PortAudio (%s)\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
 
+    // Create output stream
+    pa_err = Pa_OpenDefaultStream(&pa_stream, 0, channels, pa_sample_fmt, sample_rate, 1024, NULL, NULL);
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error creating PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
+
+    // Start output stream
+    pa_err = Pa_StartStream(pa_stream);
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error starting PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
+        return 1;
+    }
+ 
     /* open input file, and allocate format context */
     if (avformat_open_input(&fmt_ctx, src_filename, NULL, NULL) < 0) {
         fprintf(stderr, "Could not open source file %s\n", src_filename);
@@ -205,17 +202,10 @@ int main (int argc, char *argv[])
  
     if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
         audio_stream = fmt_ctx->streams[audio_stream_idx];
-
     }
  
     /* dump input information to stderr */
     av_dump_format(fmt_ctx, 0, src_filename, 0);
- 
-    if (!audio_stream && !video_stream) {
-        fprintf(stderr, "Could not find audio or video stream in the input, aborting\n");
-        ret = 1;
-        goto end;
-    }
  
     frame = av_frame_alloc();
     if (!frame) {
@@ -231,6 +221,7 @@ int main (int argc, char *argv[])
         goto end;
     }
  
+ 
     /* read frames from the file */
     while (av_read_frame(fmt_ctx, pkt) >= 0) {
         // check if the packet belongs to a stream we are interested in, otherwise
@@ -243,38 +234,25 @@ int main (int argc, char *argv[])
     }
  
     /* flush the decoders */
-    if (video_dec_ctx)
-        decode_packet(video_dec_ctx, NULL);
     if (audio_dec_ctx)
         decode_packet(audio_dec_ctx, NULL);
- 
-    printf("Demuxing succeeded.\n");
- 
-    // if (audio_stream) {
-    //     enum AVSampleFormat sfmt = audio_dec_ctx->sample_fmt;
-    //     int n_channels = audio_dec_ctx->ch_layout.nb_channels;
-    //     const char *fmt;
- 
-    //     if (av_sample_fmt_is_planar(sfmt)) {
-    //         const char *packed = av_get_sample_fmt_name(sfmt);
-    //         printf("Warning: the sample format the decoder produced is planar "
-    //                "(%s). This example will output the first channel only.\n",
-    //                packed ? packed : "?");
-    //         sfmt = av_get_packed_sample_fmt(sfmt);
-    //         n_channels = 1;
-    //     }
- 
-    //     if ((ret = get_format_from_sample_fmt(&fmt, sfmt)) < 0)
-    //         goto end;
-    // }
+  
+
+    // Clean up
+    av_frame_free(&frame);
+    av_packet_free(&pkt);
+    avcodec_free_context(&audio_dec_ctx);
+    avformat_close_input(&fmt_ctx);
+
+    Pa_StopStream(pa_stream);
+    Pa_CloseStream(pa_stream);
+    Pa_Terminate();
  
 end:
-    avcodec_free_context(&video_dec_ctx);
     avcodec_free_context(&audio_dec_ctx);
     avformat_close_input(&fmt_ctx);
     av_packet_free(&pkt);
     av_frame_free(&frame);
-    av_free(video_dst_data[0]);
  
     return ret < 0;
 }
