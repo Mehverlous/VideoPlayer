@@ -6,6 +6,7 @@
 #include <libavutil/timestamp.h>
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <SDL2/SDL.h>
  
 static AVFormatContext *fmt_ctx = NULL;
 static AVCodecContext *audio_dec_ctx;
