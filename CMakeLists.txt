@@ -43,9 +43,9 @@ find_library(SDL_LIBRARY SDL2)
 #find_path(GTK3_INCLUDE_DIRS portaudio.h)
 #find_library(PORTAUDIO_LIBRARY portaudio)
 
-add_executable(videoplayer test.c)
-#add_executable(videoplayer FinalProject.c)
-#add_executable(videoplayer main.c)
+#add_executable(videoplayer src/test.c)
+add_executable(videoplayer src/AudioFuncTest.c)
+#add_executable(videoplayer src/main.c)
 
 
 #set_target_properties(videoplayer PROPERTIES WIN32_EXECUTABLE FALSE)  # If you dont want console to run with your .exe
