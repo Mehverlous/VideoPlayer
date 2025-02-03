@@ -6,8 +6,6 @@
 #include <libavutil/timestamp.h>
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-
-#define FRAMES_TO_PROCESS 1000
  
 static AVFormatContext *fmt_ctx = NULL;
 static AVCodecContext *audio_dec_ctx;
@@ -25,64 +23,21 @@ static PaError pa_err;
 static const int sample_rate = 44100;
 static const int channels = 2;
 static const PaSampleFormat pa_sample_fmt = paFloat32;
-
-typedef struct {
-    uint8_t **audio_data;
-    int audio_samples;
-    int audio_channels;
-    int audio_format;
-} Audio_Frames;
-
-Audio_Frames aud_frame_data[FRAMES_TO_PROCESS];
-int current_frame = 0;
-
-static int save_audio_frame(AVFrame *frame){
-    if (current_frame >= FRAMES_TO_PROCESS) {
-        fprintf(stderr, "Exceeded maximum number of frames to process\n");
-        return -1;
-    }
-
-    // Allocate memory for the audio data pointers
-    aud_frame_data[current_frame].audio_data = av_calloc(frame->ch_layout.nb_channels, sizeof(uint8_t*));
-    if (!aud_frame_data[current_frame].audio_data) {
-        fprintf(stderr, "Could not allocate audio data pointers\n");
-        return -1;
-    }
-
-    // Allocate audio samples
-    int ret = av_samples_alloc(aud_frame_data[current_frame].audio_data, NULL, frame->ch_layout.nb_channels, frame->nb_samples, AV_SAMPLE_FMT_DBLP, 0);
-    if (ret < 0) {
-        fprintf(stderr, "Could not allocate audio samples\n");
-        av_free(aud_frame_data[current_frame].audio_data);
-        return ret;
-    }
-
-    // Copy audio samples
-    ret = av_samples_copy(aud_frame_data[current_frame].audio_data, frame->extended_data, 0, 0, frame->nb_samples, frame->ch_layout.nb_channels, AV_SAMPLE_FMT_DBLP);
-    if (ret < 0) {
-        fprintf(stderr, "Could not copy audio samples\n");
-        av_freep(&aud_frame_data[current_frame].audio_data[0]);
-        av_free(aud_frame_data[current_frame].audio_data);
-        return ret;
-    }
-
-    aud_frame_data[current_frame].audio_samples = frame->nb_samples;
-    aud_frame_data[current_frame].audio_channels = frame->ch_layout.nb_channels;
-
-    current_frame++;
-    return 0;
-}
  
-static int output_audio_frame(){
-    for(int i = 0; i < FRAMES_TO_PROCESS; i++){
-        pa_err = Pa_WriteStream(pa_stream, aud_frame_data[i].audio_data[0], aud_frame_data[i].audio_samples);
-        if (pa_err != paNoError) {
-            fprintf(stderr, "Error writing audio to PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
-            return -1;
-        }
+
+ 
+static int output_audio_frame(AVFrame *frame)
+{
+    printf("audio_frame n:%d nb_samples:%d pts:%s\n",
+           audio_frame_count++, frame->nb_samples,
+           av_ts2timestr(frame->pts, &audio_dec_ctx->time_base));
+
+    pa_err = Pa_WriteStream(pa_stream, frame->extended_data[0], frame->nb_samples);
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error writing audio to PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
+        return -1;
     }
-
-
+ 
     return 0;
 }
  
@@ -112,7 +67,7 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt)
  
         // write the frame data to output file
         if (!(dec->codec->type == AVMEDIA_TYPE_VIDEO))
-            ret = save_audio_frame(frame);
+            ret = output_audio_frame(frame);
  
         av_frame_unref(frame);
         if (ret < 0)
@@ -205,7 +160,7 @@ static int get_format_from_sample_fmt(const char **fmt,
 int main (int argc, char **argv)
 {
     int ret = 0;
- 
+
     // Initialize PortAudio
     pa_err = Pa_Initialize();
     if (pa_err != paNoError) {
@@ -214,7 +169,7 @@ int main (int argc, char **argv)
     }
 
     // Create output stream
-    pa_err = Pa_OpenDefaultStream(&pa_stream, 0, channels, pa_sample_fmt, sample_rate, 1024, NULL, NULL);
+    pa_err = Pa_OpenDefaultStream(&pa_stream, 0, channels, pa_sample_fmt, sample_rate, paFramesPerBufferUnspecified, NULL, NULL);
     if (pa_err != paNoError) {
         fprintf(stderr, "Error creating PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
         return 1;
@@ -271,9 +226,6 @@ int main (int argc, char **argv)
         if (ret < 0)
             break;
     }
-
-    //play decoded audio
-    int result = output_audio_frame();
  
     /* flush the decoders */
     if (audio_dec_ctx)

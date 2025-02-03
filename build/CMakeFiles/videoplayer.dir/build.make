@@ -97,9 +97,6 @@ videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavfo
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavutil.dll.a
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavdevice.dll.a
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libswscale.dll.a
-videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libSDL2.dll.a
-videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libSDL2main.a
-videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libSDL2.dll.a
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libportaudio.dll.a
 videoplayer.exe: CMakeFiles/videoplayer.dir/linkLibs.rsp
 videoplayer.exe: CMakeFiles/videoplayer.dir/objects1.rsp

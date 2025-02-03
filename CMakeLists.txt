@@ -37,17 +37,17 @@ find_library(AVDEVICE_LIBRARY avdevice)
 find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h)
 find_library(SWSCALE_LIBRARY swscale)
 
-find_path(GTK3_INCLUDE_DIRS SDL2/SDL.h)
-find_library(SDL_LIBRARY SDL2)
+# find_path(GTK3_INCLUDE_DIRS SDL2/SDL.h)
+# find_library(SDL_LIBRARY SDL2)
 
-#find_path(GTK3_INCLUDE_DIRS portaudio.h)
-#find_library(PORTAUDIO_LIBRARY portaudio)
+find_path(GTK3_INCLUDE_DIRS portaudio.h)
+find_library(PORTAUDIO_LIBRARY portaudio)
 
-#add_executable(videoplayer src/test.c)
+#add_executable(videoplayer src/PortAudioTest.c)
 add_executable(videoplayer src/AudioFuncTest.c)
 #add_executable(videoplayer src/main.c)
 
 
 #set_target_properties(videoplayer PROPERTIES WIN32_EXECUTABLE FALSE)  # If you dont want console to run with your .exe
-target_link_libraries(videoplayer ${GTK4_LIBRARIES} ${AVCODEC_LIBRARY} ${AVFORMAT_LIBRARY} ${AVUTIL_LIBRARY} ${AVDEVICE_LIBRARY} ${SWSCALE_LIBRARY} ${SDL_LIBRARY} ${SDL2_LIBRARIES} ${PORTAUDIO_LIBRARY})
-target_include_directories(videoplayer PRIVATE ${AVCODEC_INCLUDE_DIR} ${AVFORMAT_INCLUDE_DIR} ${AVUTIL_INCLUDE_DIR} ${AVDEVICE_INCLUDE_DIR} ${SWSCALE_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
+target_link_libraries(videoplayer ${GTK4_LIBRARIES} ${AVCODEC_LIBRARY} ${AVFORMAT_LIBRARY} ${AVUTIL_LIBRARY} ${AVDEVICE_LIBRARY} ${SWSCALE_LIBRARY} ${PORTAUDIO_LIBRARY})
+target_include_directories(videoplayer PRIVATE ${AVCODEC_INCLUDE_DIR} ${AVFORMAT_INCLUDE_DIR} ${AVUTIL_INCLUDE_DIR} ${AVDEVICE_INCLUDE_DIR} ${SWSCALE_INCLUDE_DIR})
