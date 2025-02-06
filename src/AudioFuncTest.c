@@ -1,3 +1,5 @@
+#include <gtk/gtk.h>
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <portaudio.h>
@@ -22,7 +24,7 @@ static int audio_frame_count = 0;
 
 static PaStream *pa_stream = NULL;
 static PaError pa_err;
-static const int sample_rate = 44100;
+static int sample_rate = 0;
 static const int channels = 2;
 static const PaSampleFormat pa_sample_fmt = paFloat32;
 
@@ -33,61 +35,88 @@ typedef struct {
     int audio_format;
 } Audio_Frames;
 
+typedef struct{
+    Audio_Frames *buffer;
+    int head, tail, num_entries, max_len;
+}circ_buf_a;
+
+circ_buf_a aud_frame_buf;
+
 Audio_Frames aud_frame_data[FRAMES_TO_PROCESS];
 int current_frame = 0;
 
-static int save_audio_frame(AVFrame *frame){
+void init_audio_buffer(circ_buf_a *b, int size){
+    b->buffer = malloc(sizeof(Audio_Frames) * size);
+    b->max_len = size;
+    b->num_entries = 0;
+    b->head = 0;
+    b->tail= 0;
+}
+
+static int enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame){
     if (current_frame >= FRAMES_TO_PROCESS) {
         fprintf(stderr, "Exceeded maximum number of frames to process\n");
         return -1;
     }
 
     // Allocate memory for the audio data pointers
-    aud_frame_data[current_frame].audio_data = av_calloc(frame->ch_layout.nb_channels, sizeof(uint8_t*));
-    if (!aud_frame_data[current_frame].audio_data) {
+    b->buffer[b->tail].audio_data = av_calloc(frame->ch_layout.nb_channels, sizeof(uint8_t*));
+    if (!b->buffer[b->tail].audio_data) {
         fprintf(stderr, "Could not allocate audio data pointers\n");
         return -1;
     }
 
     // Allocate audio samples
-    int ret = av_samples_alloc(aud_frame_data[current_frame].audio_data, NULL, frame->ch_layout.nb_channels, frame->nb_samples, AV_SAMPLE_FMT_DBLP, 0);
+    int ret = av_samples_alloc(b->buffer[b->tail].audio_data, NULL, frame->ch_layout.nb_channels, frame->nb_samples, AV_SAMPLE_FMT_FLTP , 0);
     if (ret < 0) {
         fprintf(stderr, "Could not allocate audio samples\n");
-        av_free(aud_frame_data[current_frame].audio_data);
+        av_free(b->buffer[b->tail].audio_data);
         return ret;
     }
 
     // Copy audio samples
-    ret = av_samples_copy(aud_frame_data[current_frame].audio_data, frame->extended_data, 0, 0, frame->nb_samples, frame->ch_layout.nb_channels, AV_SAMPLE_FMT_DBLP);
+    ret = av_samples_copy(b->buffer[b->tail].audio_data, frame->extended_data, 0, 0, frame->nb_samples, frame->ch_layout.nb_channels, AV_SAMPLE_FMT_FLTP );
     if (ret < 0) {
         fprintf(stderr, "Could not copy audio samples\n");
-        av_freep(&aud_frame_data[current_frame].audio_data[0]);
-        av_free(aud_frame_data[current_frame].audio_data);
+        av_freep(&b->buffer[b->tail].audio_data[0]);
+        av_free(b->buffer[b->tail].audio_data);
         return ret;
     }
 
-    aud_frame_data[current_frame].audio_samples = frame->nb_samples;
-    aud_frame_data[current_frame].audio_channels = frame->ch_layout.nb_channels;
+    b->buffer[b->tail].audio_samples = frame->nb_samples;
+    b->buffer[b->tail].audio_channels = frame->ch_layout.nb_channels;
+    b->num_entries++;
+    b->tail = (b->tail + 1) % b->max_len;
 
     current_frame++;
     return 0;
 }
  
 static int output_audio_frame(){
-    for(int i = 0; i < FRAMES_TO_PROCESS; i++){
-        pa_err = Pa_WriteStream(pa_stream, aud_frame_data[i].audio_data[0], aud_frame_data[i].audio_samples);
-        if (pa_err != paNoError) {
-            fprintf(stderr, "Error writing audio to PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
-            return -1;
-        }
+    // Create an interleaved buffer for both channels
+    float *interleaved_buffer = malloc(aud_frame_buf.buffer[current_frame].audio_samples * channels * sizeof(float));
+    
+    for(int i = 0; i < aud_frame_buf.buffer[current_frame].audio_samples; i++) {
+        // Left channel
+        interleaved_buffer[i * 2] = ((float*)aud_frame_buf.buffer[current_frame].audio_data[0])[i];
+        // Right channel
+        interleaved_buffer[i * 2 + 1] = ((float*)aud_frame_buf.buffer[current_frame].audio_data[1])[i];
     }
 
+    // Write interleaved stereo data
+    pa_err = Pa_WriteStream(pa_stream, interleaved_buffer, aud_frame_buf.buffer[current_frame].audio_samples);
+    if (pa_err != paNoError) {
+        fprintf(stderr, "Error writing audio to PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
+        free(interleaved_buffer);
+        return -1;
+    }
 
+    free(interleaved_buffer);
+    current_frame++;
     return 0;
 }
  
-static int decode_packet(AVCodecContext *dec, const AVPacket *pkt)
-{
+static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
     int ret = 0;
  
     // submit the packet to the decoder
@@ -112,7 +141,7 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt)
  
         // write the frame data to output file
         if (!(dec->codec->type == AVMEDIA_TYPE_VIDEO))
-            ret = save_audio_frame(frame);
+            ret = enqueue_audio_buffer(&aud_frame_buf, frame);
  
         av_frame_unref(frame);
         if (ret < 0)
@@ -202,9 +231,46 @@ static int get_format_from_sample_fmt(const char **fmt,
     return -1;
 }
  
-int main (int argc, char **argv)
-{
+int main (int argc, char **argv){
     int ret = 0;
+
+    init_audio_buffer(&aud_frame_buf, FRAMES_TO_PROCESS);
+
+
+    /* open input file, and allocate format context */
+    if (avformat_open_input(&fmt_ctx, src_filename, NULL, NULL) < 0) {
+        fprintf(stderr, "Could not open source file %s\n", src_filename);
+        exit(1);
+    }
+ 
+    /* retrieve stream information */
+    if (avformat_find_stream_info(fmt_ctx, NULL) < 0) {
+        fprintf(stderr, "Could not find stream information\n");
+        exit(1);
+    }
+ 
+    if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
+        audio_stream = fmt_ctx->streams[audio_stream_idx];
+        sample_rate = audio_dec_ctx->sample_rate;
+        printf("Sample rate: %d\n", sample_rate);
+    }
+ 
+    /* dump input information to stderr */
+    //av_dump_format(fmt_ctx, 0, src_filename, 0);
+ 
+    frame = av_frame_alloc();
+    if (!frame) {
+        fprintf(stderr, "Could not allocate frame\n");
+        ret = AVERROR(ENOMEM);
+        goto end;
+    }
+ 
+    pkt = av_packet_alloc();
+    if (!pkt) {
+        fprintf(stderr, "Could not allocate packet\n");
+        ret = AVERROR(ENOMEM);
+        goto end;
+    }
  
     // Initialize PortAudio
     pa_err = Pa_Initialize();
@@ -227,40 +293,6 @@ int main (int argc, char **argv)
         return 1;
     }
  
-    /* open input file, and allocate format context */
-    if (avformat_open_input(&fmt_ctx, src_filename, NULL, NULL) < 0) {
-        fprintf(stderr, "Could not open source file %s\n", src_filename);
-        exit(1);
-    }
- 
-    /* retrieve stream information */
-    if (avformat_find_stream_info(fmt_ctx, NULL) < 0) {
-        fprintf(stderr, "Could not find stream information\n");
-        exit(1);
-    }
- 
-    if (open_codec_context(&audio_stream_idx, &audio_dec_ctx, fmt_ctx, AVMEDIA_TYPE_AUDIO) >= 0) {
-        audio_stream = fmt_ctx->streams[audio_stream_idx];
-    }
- 
-    /* dump input information to stderr */
-    av_dump_format(fmt_ctx, 0, src_filename, 0);
- 
-    frame = av_frame_alloc();
-    if (!frame) {
-        fprintf(stderr, "Could not allocate frame\n");
-        ret = AVERROR(ENOMEM);
-        goto end;
-    }
- 
-    pkt = av_packet_alloc();
-    if (!pkt) {
-        fprintf(stderr, "Could not allocate packet\n");
-        ret = AVERROR(ENOMEM);
-        goto end;
-    }
- 
- 
     /* read frames from the file */
     while (av_read_frame(fmt_ctx, pkt) >= 0) {
         // check if the packet belongs to a stream we are interested in, otherwise
@@ -273,8 +305,12 @@ int main (int argc, char **argv)
     }
 
     //play decoded audio
-    int result = output_audio_frame();
- 
+    current_frame = 0;
+    while (current_frame < FRAMES_TO_PROCESS){
+        output_audio_frame();
+        //Sleep(1);
+    }
+
     /* flush the decoders */
     if (audio_dec_ctx)
         decode_packet(audio_dec_ctx, NULL);

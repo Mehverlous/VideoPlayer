@@ -68,29 +68,29 @@ include CMakeFiles/videoplayer.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/videoplayer.dir/flags.make
 
-CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj: CMakeFiles/videoplayer.dir/flags.make
-CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj: CMakeFiles/videoplayer.dir/includes_C.rsp
-CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj: C:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/src/AudioFuncTest.c
-CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj: CMakeFiles/videoplayer.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj"
-	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj -MF CMakeFiles\videoplayer.dir\src\AudioFuncTest.c.obj.d -o CMakeFiles\videoplayer.dir\src\AudioFuncTest.c.obj -c C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\AudioFuncTest.c
+CMakeFiles/videoplayer.dir/src/main.c.obj: CMakeFiles/videoplayer.dir/flags.make
+CMakeFiles/videoplayer.dir/src/main.c.obj: CMakeFiles/videoplayer.dir/includes_C.rsp
+CMakeFiles/videoplayer.dir/src/main.c.obj: C:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/src/main.c
+CMakeFiles/videoplayer.dir/src/main.c.obj: CMakeFiles/videoplayer.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/videoplayer.dir/src/main.c.obj"
+	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/videoplayer.dir/src/main.c.obj -MF CMakeFiles\videoplayer.dir\src\main.c.obj.d -o CMakeFiles\videoplayer.dir\src\main.c.obj -c C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\main.c
 
-CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.i"
-	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\AudioFuncTest.c > CMakeFiles\videoplayer.dir\src\AudioFuncTest.c.i
+CMakeFiles/videoplayer.dir/src/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/videoplayer.dir/src/main.c.i"
+	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\main.c > CMakeFiles\videoplayer.dir\src\main.c.i
 
-CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.s"
-	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\AudioFuncTest.c -o CMakeFiles\videoplayer.dir\src\AudioFuncTest.c.s
+CMakeFiles/videoplayer.dir/src/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/videoplayer.dir/src/main.c.s"
+	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\main.c -o CMakeFiles\videoplayer.dir\src\main.c.s
 
 # Object files for target videoplayer
 videoplayer_OBJECTS = \
-"CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj"
+"CMakeFiles/videoplayer.dir/src/main.c.obj"
 
 # External object files for target videoplayer
 videoplayer_EXTERNAL_OBJECTS =
 
-videoplayer.exe: CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj
+videoplayer.exe: CMakeFiles/videoplayer.dir/src/main.c.obj
 videoplayer.exe: CMakeFiles/videoplayer.dir/build.make
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavcodec.dll.a
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavformat.dll.a

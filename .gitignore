@@ -1,4 +1,4 @@
 
-Documents/
-build/
-.vscode/
+/Documents
+/build
+/.vscode
