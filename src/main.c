@@ -367,7 +367,7 @@ static void activate(GtkApplication *app, gpointer user_data){
 
 	//initializing the window
 	window = gtk_application_window_new(app);
-	gtk_window_set_title(GTK_WINDOW(window), "Testing Carousel");
+	gtk_window_set_title(GTK_WINDOW(window), "Video Player");
 	gtk_window_set_default_size(GTK_WINDOW(window), 1280, 800);
 
 	//creating a container to store the main widgets (drawing area and buttons)
