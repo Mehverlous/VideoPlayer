@@ -998,6 +998,13 @@ CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winsvc.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/mcx.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/imm.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/unistd.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/io.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/getopt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_unistd.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/portaudio.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/imgutils.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixdesc.h \
@@ -1051,4 +1058,6 @@ CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version_major.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version_major.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_compat.h

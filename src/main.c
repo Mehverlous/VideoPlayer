@@ -53,13 +53,12 @@ typedef struct{
 }circ_buf_a;
 
 #define FRAMES_TO_PROCESS 1000
-#define FRAMES_PER_BUFFER 2048
+//#define FRAMES_PER_BUFFER 2048
 #define MIN_AUDIO_BUFFER_SIZE 5
 
 gint vid_timer;
 gint aud_timer;
 static gboolean isStarted = FALSE;
-int currentImage = 0;
 static const char *src_filename = "./Documents/ben10.mp4";
 circ_buf_v vid_frame_buf;
 circ_buf_a aud_frame_buf;
@@ -138,16 +137,16 @@ void enqueue_video_buffer(circ_buf_v *b, AVFrame *frame, int iFrame){
 	pthread_mutex_unlock(&mutex);
 }
 
-static int enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame){
+void enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame){
 	if(audio_buffer_full(b))
-		return -1;
+		return;
 
 	pthread_mutex_lock(&mutex);
     // Allocate memory for the audio data pointers
     b->buffer[b->tail].audio_data = av_calloc(frame->ch_layout.nb_channels, sizeof(uint8_t*));
     if (!b->buffer[b->tail].audio_data) {
         fprintf(stderr, "Could not allocate audio data pointers\n");
-        return -1;
+        exit(EXIT_FAILURE);
     }
 
     // Allocate audio samples
@@ -155,7 +154,7 @@ static int enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame){
     if (ret < 0) {
         fprintf(stderr, "Could not allocate audio samples\n");
         av_free(b->buffer[b->tail].audio_data);
-        return ret;
+        exit(EXIT_FAILURE);
     }
 
     // Copy audio samples
@@ -164,7 +163,7 @@ static int enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame){
         fprintf(stderr, "Could not copy audio samples\n");
         av_freep(&b->buffer[b->tail].audio_data[0]);
         av_free(b->buffer[b->tail].audio_data);
-        return ret;
+        exit(EXIT_FAILURE);
     }
 
     b->buffer[b->tail].audio_samples = frame->nb_samples;
@@ -174,7 +173,6 @@ static int enqueue_audio_buffer(circ_buf_a *b, AVFrame *frame){
 
 	pthread_mutex_unlock(&mutex);
 
-    return 0;
 }
 
 static int decode_packet(AVCodecContext *dec, const AVPacket *pkt){
@@ -281,11 +279,12 @@ static int open_codec_context(int *stream_idx, AVCodecContext **dec_ctx, AVForma
 
 static void start_timer(GtkWidget *darea){
 	double frame_rate = fps.num/fps.den;
-	double interval = (FRAMES_PER_BUFFER * 1000) / sample_rate;
+	//double interval = (FRAMES_PER_BUFFER * 1000) / sample_rate;
 
 	if (!isStarted){
 		vid_timer = g_timeout_add(frame_rate, (GSourceFunc)update_frame, darea);
 		aud_timer = g_timeout_add(1, (GSourceFunc)play_audio, NULL);
+
 		isStarted = TRUE;
 		printf("Starting Timer: %d\nStarting Timer2: %d\n", vid_timer, aud_timer);
 	}
@@ -325,7 +324,6 @@ static void update_frame(GtkWidget *darea){
 }
 
 static void play_audio() {
-	static gboolean audio_started = FALSE;
 	pthread_mutex_lock(&mutex);
 
     // Create an interleaved buffer for both channels
@@ -339,8 +337,12 @@ static void play_audio() {
     }
 
     // Write interleaved stereo data
-    pa_err = Pa_WriteStream(pa_stream, interleaved_buffer, aud_frame_buf.buffer[aud_frame_buf.head].audio_samples);
-    if (pa_err != paNoError) {
+	pa_err = Pa_WriteStream(pa_stream, interleaved_buffer, aud_frame_buf.buffer[aud_frame_buf.head].audio_samples);
+
+    if (pa_err == paOutputUnderflowed) {
+        // Handle underflow by waiting briefly
+        Pa_Sleep(1);
+    }else if(pa_err != paNoError) {
         fprintf(stderr, "Error writing audio to PortAudio stream (%s)\n", Pa_GetErrorText(pa_err));
         free(interleaved_buffer);
         exit(EXIT_FAILURE);
@@ -493,8 +495,6 @@ int video_processor(){
 		printf("Successfully openned audio context\n");
 	}
 
-	Sleep(5);
-
 	printf("\n");
 	// dump info to stderr
 	av_dump_format(fmt_ctx, 0, src_filename, 0);
@@ -530,15 +530,16 @@ int video_processor(){
 	int i = 0;
 
 	while (av_read_frame(fmt_ctx, pkt) >= 0){
-	// Is this a packet from the video stream?
-	if(pkt->stream_index == video_stream_idx)
-		ret = decode_packet(video_dec_ctx, pkt);
-	if(pkt->stream_index == audio_stream_idx)
-		ret = decode_packet(audio_dec_ctx, pkt);
+		// Is this a packet from the video stream?
+		if(pkt->stream_index == video_stream_idx)
+			ret = decode_packet(video_dec_ctx, pkt);
+		if(pkt->stream_index == audio_stream_idx)
+			ret = decode_packet(audio_dec_ctx, pkt);
 
-	av_packet_unref(pkt);
-	if(ret < 0)
-		break;
+		av_packet_unref(pkt);
+
+		if(ret < 0)
+			break;
 	}
 
 	// Flushing the decoders

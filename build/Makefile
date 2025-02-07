@@ -128,29 +128,29 @@ videoplayer/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\videoplayer.dir\build.make CMakeFiles/videoplayer.dir/build
 .PHONY : videoplayer/fast
 
-src/main.obj: src/main.c.obj
-.PHONY : src/main.obj
+src/AudioFuncTest.obj: src/AudioFuncTest.c.obj
+.PHONY : src/AudioFuncTest.obj
 
 # target to build an object file
-src/main.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\videoplayer.dir\build.make CMakeFiles/videoplayer.dir/src/main.c.obj
-.PHONY : src/main.c.obj
+src/AudioFuncTest.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\videoplayer.dir\build.make CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj
+.PHONY : src/AudioFuncTest.c.obj
 
-src/main.i: src/main.c.i
-.PHONY : src/main.i
+src/AudioFuncTest.i: src/AudioFuncTest.c.i
+.PHONY : src/AudioFuncTest.i
 
 # target to preprocess a source file
-src/main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\videoplayer.dir\build.make CMakeFiles/videoplayer.dir/src/main.c.i
-.PHONY : src/main.c.i
+src/AudioFuncTest.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\videoplayer.dir\build.make CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.i
+.PHONY : src/AudioFuncTest.c.i
 
-src/main.s: src/main.c.s
-.PHONY : src/main.s
+src/AudioFuncTest.s: src/AudioFuncTest.c.s
+.PHONY : src/AudioFuncTest.s
 
 # target to generate assembly for a file
-src/main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\videoplayer.dir\build.make CMakeFiles/videoplayer.dir/src/main.c.s
-.PHONY : src/main.c.s
+src/AudioFuncTest.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\videoplayer.dir\build.make CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.s
+.PHONY : src/AudioFuncTest.c.s
 
 # Help Target
 help:
@@ -161,9 +161,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... videoplayer
-	@echo ... src/main.obj
-	@echo ... src/main.i
-	@echo ... src/main.s
+	@echo ... src/AudioFuncTest.obj
+	@echo ... src/AudioFuncTest.i
+	@echo ... src/AudioFuncTest.s
 .PHONY : help
 
 
