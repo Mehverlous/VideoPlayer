@@ -1,6 +1,12 @@
-CMakeFiles/videoplayer.dir/test.c.obj: \
- C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\test.c \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/imgutils.h \
+CMakeFiles/videoplayer.dir/src/AudioFuncTest.c.obj: \
+ C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\AudioFuncTest.c \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtk.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/css/gtkcss.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/galloca.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtypes.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/glib-2.0/include/glibconfig.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gmacros.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stddef.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/crtdefs.h \
@@ -10,88 +16,9 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_secapi.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/vadefs.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sdks/_mingw_ddk.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdint.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdint.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixdesc.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/inttypes.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/attributes.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixfmt.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/avconfig.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/version.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/macros.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/rational.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/syslimits.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/limits.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/samplefmt.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/timestamp.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/avutil.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/common.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/errno.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/math.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdio.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_stdio_config.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_off_t.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/swprintf.inl \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdio_s.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdlib.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_wstdlib.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdlib_s.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/malloc.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/mm_malloc.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/string.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/string_s.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/error.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/mem.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/mathematics.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/intfloat.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/log.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdarg.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdarg.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_stdarg.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/avcodec.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/attributes.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/avutil.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/buffer.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/channel_layout.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/dict.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/frame.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/buffer.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/channel_layout.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/dict.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/samplefmt.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/log.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixfmt.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/rational.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/hwcontext.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/frame.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_id.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/version_major.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/version_major.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_id.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/defs.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/packet.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/version.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/version.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_desc.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_par.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/avformat.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_par.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/defs.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/packet.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/avio.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version_major.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version_major.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtk.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/css/gtkcss.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/galloca.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtypes.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/glib-2.0/include/glibconfig.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gmacros.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/float.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gversionmacros.h \
@@ -101,12 +28,17 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/sys/timeb_s.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_timeval.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_time.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/string.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/string_s.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/garray.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gasyncqueue.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gthread.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gatomic.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/glib-typeof.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gerror.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdarg.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdarg.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_stdarg.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gquark.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gutils.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gbacktrace.h \
@@ -169,6 +101,12 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gstringchunk.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gstrvbuilder.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtestutils.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/errno.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdlib.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_wstdlib.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdlib_s.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/malloc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/mm_malloc.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gthreadpool.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtimer.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/glib-2.0/glib/gtrashstack.h \
@@ -391,6 +329,9 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/harfbuzz/hb.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/harfbuzz/hb-blob.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/harfbuzz/hb-common.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/inttypes.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdint.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdint.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/harfbuzz/hb-buffer.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/harfbuzz/hb-unicode.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/harfbuzz/hb-font.h \
@@ -428,6 +369,11 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango-markup.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango-renderer.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pango-1.0/pango/pango-utils.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stdio.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_stdio_config.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_off_t.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/swprintf.inl \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stdio_s.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gdk/gdkconfig.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gdk/gdkenums.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gdk/gdkcairo.h \
@@ -506,6 +452,7 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-version-macros.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-version.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-simd4f.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/math.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-simd4x4f.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-vec2.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/graphene-1.0/graphene-vec3.h \
@@ -813,34 +760,23 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowcontrols.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowgroup.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/gtk-4.0/gtk/gtkwindowhandle.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_main.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_stdinc.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_config.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_platform.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/begin_code.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/close_code.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/strings.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/wchar.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_stat64.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/wchar_s.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/windows.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sdkddkver.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/excpt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/windef.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winapifamily.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/minwindef.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/specstrings.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sal.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/concurrencysal.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/driverspecs.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winnt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_mingw_unicode.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/ctype.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_assert.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_atomic.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_audio.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_error.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_endian.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_mutex.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_thread.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_rwops.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_clipboard.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_cpuinfo.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/intrin.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/setjmp.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/apiset.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/psdk_inc/intrin-impl.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/basetsd.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/guiddef.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/x86intrin.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/x86gprintrin.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/ia32intrin.h \
@@ -936,37 +872,192 @@ CMakeFiles/videoplayer.dir/test.c.obj: \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/fma4intrin.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/ammintrin.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/xopintrin.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/cpuid.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_events.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_video.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_pixels.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_rect.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_surface.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_blendmode.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_keyboard.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_keycode.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_scancode.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_mouse.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_joystick.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_guid.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_gamecontroller.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_sensor.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_quit.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_gesture.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_touch.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_filesystem.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_haptic.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_hidapi.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_hints.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_loadso.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_log.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_messagebox.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_metal.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_power.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_render.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_shape.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_system.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_timer.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_version.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_locale.h \
- C:/Users/David/Documents/DevProjects/msys64/mingw64/include/SDL2/SDL_misc.h
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pshpack4.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/poppack.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pshpack4.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pshpack2.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/poppack.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pshpack2.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pshpack8.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pshpack8.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/ktmtypes.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winbase.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/apisetcconv.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/minwinbase.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/bemapiset.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/debugapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/errhandlingapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/fibersapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/fileapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/handleapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/heapapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/ioapiset.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/interlockedapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/jobapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libloaderapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/memoryapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/namedpipeapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/namespaceapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/processenv.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/processthreadsapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/processtopologyapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/profileapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/realtimeapiset.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/securityappcontainer.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/securitybaseapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/synchapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sysinfoapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/systemtopologyapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/threadpoolapiset.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/threadpoollegacyapiset.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/utilapiset.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/wow64apiset.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winerror.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/fltwinerror.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/timezoneapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/wingdi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pshpack1.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winuser.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/tvout.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winnls.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/datetimeapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stringapiset.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/wincon.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winver.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winreg.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/reason.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winnetwk.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/wnnc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/virtdisk.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cderr.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/dde.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/ddeml.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/dlgs.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/lzexpand.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/mmsystem.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/mmsyscom.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/mciapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/mmiscapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/mmiscapi2.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/playsoundapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/mmeapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/timeapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/joystickapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/nb30.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpcdce.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpcdcep.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpcnsi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpcnterr.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpcasync.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/shellapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winperf.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winsock.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/_bsd_types.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/inaddr.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/psdk_inc/_socket_types.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/psdk_inc/_fd_types.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/psdk_inc/_ip_types.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/psdk_inc/_ip_mreq1.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/psdk_inc/_wsadata.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/psdk_inc/_xmitfile.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/psdk_inc/_wsa_errnos.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/wincrypt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/bcrypt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/ncrypt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/dpapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winefs.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winscard.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/wtypes.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpcndr.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpcnsip.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/rpcsal.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/ole2.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/objbase.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/combaseapi.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/wtypesbase.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/unknwnbase.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/objidlbase.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/cguid.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/objidl.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/unknwn.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/urlmon.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/oleidl.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/servprov.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/msxml.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/oaidl.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/propidl.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/oleauto.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winioctl.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winsmcrd.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winspool.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/prsht.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/commdlg.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stralign.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sec_api/stralign_s.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/winsvc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/mcx.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/imm.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/unistd.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/io.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/process.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/corecrt_startup.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/sys/types.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/getopt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_unistd.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/portaudio.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/imgutils.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixdesc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/attributes.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixfmt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/avconfig.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/version.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/macros.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/rational.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/samplefmt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/timestamp.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/avutil.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/common.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/error.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/mem.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/mathematics.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/intfloat.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/log.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/avcodec.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/attributes.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/avutil.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/buffer.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/channel_layout.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/dict.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/frame.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/buffer.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/channel_layout.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/dict.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/samplefmt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/log.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/pixfmt.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/rational.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/hwcontext.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/frame.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_id.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/version_major.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/version_major.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_id.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/defs.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/packet.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/version.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/version.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_desc.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_par.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/avformat.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec_par.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/defs.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/packet.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/avio.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version_major.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavformat/version_major.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavcodec/codec.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread.h \
+ C:/Users/David/Documents/DevProjects/msys64/mingw64/include/pthread_compat.h

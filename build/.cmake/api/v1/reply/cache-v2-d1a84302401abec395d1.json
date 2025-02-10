@@ -1882,6 +1882,66 @@
 			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/bin/pkg-config.exe"
 		},
 		{
+			"name" : "PORTAUDIO_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libportaudio.dll.a"
+		},
+		{
+			"name" : "PORTAUDIO_lIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libportaudio.dll.a"
+		},
+		{
+			"name" : "SDL2_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for SDL2."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2"
+		},
+		{
+			"name" : "SDL_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/include"
+		},
+		{
+			"name" : "SDL_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libSDL2.dll.a"
+		},
+		{
 			"name" : "SWSCALE_INCLUDE_DIR",
 			"properties" : 
 			[
@@ -1892,6 +1952,18 @@
 			],
 			"type" : "PATH",
 			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/include"
+		},
+		{
+			"name" : "SWSCALE_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libswscale.dll.a"
 		},
 		{
 			"name" : "SWSCALE_lIBRARY",

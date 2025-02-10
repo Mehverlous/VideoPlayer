@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/videoplayer.dir/main.c.obj"
-  "CMakeFiles/videoplayer.dir/main.c.obj.d"
+  "CMakeFiles/videoplayer.dir/src/main.c.obj"
+  "CMakeFiles/videoplayer.dir/src/main.c.obj.d"
   "libvideoplayer.dll.a"
   "videoplayer.exe"
   "videoplayer.exe.manifest"

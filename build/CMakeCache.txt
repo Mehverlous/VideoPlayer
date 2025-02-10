@@ -280,8 +280,26 @@ PKG_CONFIG_ARGN:STRING=
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/bin/pkg-config.exe
 
+//Path to a library.
+PORTAUDIO_LIBRARY:FILEPATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libportaudio.dll.a
+
+//Path to a library.
+PORTAUDIO_lIBRARY:FILEPATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libportaudio.dll.a
+
+//The directory containing a CMake configuration file for SDL2.
+SDL2_DIR:PATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2
+
+//Path to a file.
+SDL_INCLUDE_DIR:PATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/include
+
+//Path to a library.
+SDL_LIBRARY:FILEPATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libSDL2.dll.a
+
 //Path to a file.
 SWSCALE_INCLUDE_DIR:PATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/include
+
+//Path to a library.
+SWSCALE_LIBRARY:FILEPATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libswscale.dll.a
 
 //Path to a library.
 SWSCALE_lIBRARY:FILEPATH=C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libswscale.dll.a

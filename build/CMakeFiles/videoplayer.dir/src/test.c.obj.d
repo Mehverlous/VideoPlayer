@@ -1,5 +1,5 @@
-CMakeFiles/videoplayer.dir/test.c.obj: \
- C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\test.c \
+CMakeFiles/videoplayer.dir/src/test.c.obj: \
+ C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\test.c \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/libavutil/imgutils.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
  C:/Users/David/Documents/DevProjects/msys64/mingw64/include/stddef.h \

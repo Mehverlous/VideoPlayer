@@ -164,6 +164,55 @@
 			"isCMake" : true,
 			"isExternal" : true,
 			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2ConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2Config.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/FeatureSummary.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2Targets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2Targets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2staticTargets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2staticTargets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2mainTargets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2mainTargets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2testTargets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/SDL2testTargets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/cmake/SDL2/sdlfind.cmake"
 		}
 	],
 	"kind" : "cmakeFiles",

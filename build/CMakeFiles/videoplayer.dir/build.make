@@ -68,35 +68,36 @@ include CMakeFiles/videoplayer.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/videoplayer.dir/flags.make
 
-CMakeFiles/videoplayer.dir/main.c.obj: CMakeFiles/videoplayer.dir/flags.make
-CMakeFiles/videoplayer.dir/main.c.obj: CMakeFiles/videoplayer.dir/includes_C.rsp
-CMakeFiles/videoplayer.dir/main.c.obj: C:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/main.c
-CMakeFiles/videoplayer.dir/main.c.obj: CMakeFiles/videoplayer.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/videoplayer.dir/main.c.obj"
-	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/videoplayer.dir/main.c.obj -MF CMakeFiles\videoplayer.dir\main.c.obj.d -o CMakeFiles\videoplayer.dir\main.c.obj -c C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\main.c
+CMakeFiles/videoplayer.dir/src/main.c.obj: CMakeFiles/videoplayer.dir/flags.make
+CMakeFiles/videoplayer.dir/src/main.c.obj: CMakeFiles/videoplayer.dir/includes_C.rsp
+CMakeFiles/videoplayer.dir/src/main.c.obj: C:/Users/David/Documents/DevProjects/msys64/home/David/Workspace/VideoPlayer/src/main.c
+CMakeFiles/videoplayer.dir/src/main.c.obj: CMakeFiles/videoplayer.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/videoplayer.dir/src/main.c.obj"
+	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/videoplayer.dir/src/main.c.obj -MF CMakeFiles\videoplayer.dir\src\main.c.obj.d -o CMakeFiles\videoplayer.dir\src\main.c.obj -c C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\main.c
 
-CMakeFiles/videoplayer.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/videoplayer.dir/main.c.i"
-	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\main.c > CMakeFiles\videoplayer.dir\main.c.i
+CMakeFiles/videoplayer.dir/src/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/videoplayer.dir/src/main.c.i"
+	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\main.c > CMakeFiles\videoplayer.dir\src\main.c.i
 
-CMakeFiles/videoplayer.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/videoplayer.dir/main.c.s"
-	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\main.c -o CMakeFiles\videoplayer.dir\main.c.s
+CMakeFiles/videoplayer.dir/src/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/videoplayer.dir/src/main.c.s"
+	C:\Users\David\Documents\DevProjects\msys64\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\David\Documents\DevProjects\msys64\home\David\Workspace\VideoPlayer\src\main.c -o CMakeFiles\videoplayer.dir\src\main.c.s
 
 # Object files for target videoplayer
 videoplayer_OBJECTS = \
-"CMakeFiles/videoplayer.dir/main.c.obj"
+"CMakeFiles/videoplayer.dir/src/main.c.obj"
 
 # External object files for target videoplayer
 videoplayer_EXTERNAL_OBJECTS =
 
-videoplayer.exe: CMakeFiles/videoplayer.dir/main.c.obj
+videoplayer.exe: CMakeFiles/videoplayer.dir/src/main.c.obj
 videoplayer.exe: CMakeFiles/videoplayer.dir/build.make
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavcodec.dll.a
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavformat.dll.a
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavutil.dll.a
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libavdevice.dll.a
 videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libswscale.dll.a
+videoplayer.exe: C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/libportaudio.dll.a
 videoplayer.exe: CMakeFiles/videoplayer.dir/linkLibs.rsp
 videoplayer.exe: CMakeFiles/videoplayer.dir/objects1.rsp
 videoplayer.exe: CMakeFiles/videoplayer.dir/link.txt
