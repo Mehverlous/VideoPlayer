@@ -66,7 +66,7 @@ int main(int, char **);
 gint vid_timer;
 gint aud_timer;
 static gboolean isStarted = FALSE;
-static const char *src_filename = "./Documents/RickRoll.mp4";
+static const char *src_filename = "./Documents/ben10.mp4";
 circ_buf_v vid_frame_buf;
 circ_buf_a aud_frame_buf;
 GdkPixbuf *currentFrame = NULL;
