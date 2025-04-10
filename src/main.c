@@ -62,11 +62,10 @@ static int open_codec_context(int *, AVCodecContext **, AVFormatContext *, enum 
 int main(int, char **);
 
 
-
 gint vid_timer;
 gint aud_timer;
 static gboolean isStarted = FALSE;
-static const char *src_filename = "./Documents/ben10.mp4";
+static const char *src_filename;
 circ_buf_v vid_frame_buf;
 circ_buf_a aud_frame_buf;
 GdkPixbuf *currentFrame = NULL;
@@ -95,6 +94,24 @@ static PaError pa_err;
 static int sample_rate = 0;
 static const int channels = 2;
 static const PaSampleFormat pa_sample_fmt = paFloat32;
+
+//TODO: The file dialog box takes a long time to load. Figure out how to make that process faster
+static void store_file_path(GObject *source_object, GAsyncResult *result, gpointer user_data) {
+    GtkFileDialog *dialog = GTK_FILE_DIALOG(source_object);
+    GFile *file = gtk_file_dialog_open_finish(dialog, result, NULL);
+    
+    if (file) {
+        src_filename = g_file_get_path(file);
+        printf("Selected file: %s\n", src_filename);
+        g_object_unref(file);
+    }
+}
+
+void select_video(GtkWidget *window) {
+    GtkFileDialog *dialog = gtk_file_dialog_new();
+    gtk_file_dialog_set_title(dialog, "Open File");
+    gtk_file_dialog_open(dialog, GTK_WINDOW(window), NULL, store_file_path, NULL);
+}
 
 void init_video_buffer(circ_buf_v *b, int size){
 	b->buffer = malloc(sizeof(Video_Frames) * size);
@@ -486,7 +503,7 @@ static void start_timer(GtkWidget *darea){
 		aud_timer = g_timeout_add(interval, (GSourceFunc)play_audio, NULL);
 
 		isStarted = TRUE;
-		printf("Starting Timer: %d\nStarting Timer2: %d\n", vid_timer, aud_timer);
+		printf("Starting Video Timer: %d\nStarting Audio Timer: %d\n", vid_timer, aud_timer);
 	}
 }
 
@@ -507,7 +524,7 @@ static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int heig
 }
 
 static void activate(GtkApplication *app, gpointer user_data){
-	GtkWidget *window, *vbox, *darea, *da_container, *button_box, *play_button, *pause_button;
+	GtkWidget *window, *vbox, *darea, *da_container, *button_box, *play_button, *pause_button, *select_button;
 
 	currentFrame = gdk_pixbuf_new_from_file("./Documents/Empty.png", NULL);
 
@@ -549,10 +566,14 @@ static void activate(GtkApplication *app, gpointer user_data){
 	gtk_box_append(GTK_BOX(button_box), pause_button);
 	g_signal_connect_swapped(pause_button, "clicked", G_CALLBACK(stop_timer), NULL);
 
+	select_button = gtk_button_new_with_label("Select Video");
+	gtk_box_append(GTK_BOX(button_box), select_button);
+	g_signal_connect_swapped(select_button, "clicked", G_CALLBACK(select_video), window);
+
 	gtk_window_present(GTK_WINDOW(window));
 }
 
-int Full_Display(int argc, char **argv){
+int Main_Window(int argc, char **argv){
 	GtkApplication *app;
 	int status;
 
@@ -565,9 +586,14 @@ int Full_Display(int argc, char **argv){
 }
 
 int main (int argc,char **argv){
-	pthread_t full_display, audio_decode, video_decode;
+	pthread_t main_window, audio_decode, video_decode;
 	pthread_mutex_init(&mutex, NULL);
 	int ret; 
+
+	pthread_create(&main_window, NULL, (void *)Main_Window, NULL);
+
+	//TODO: Find a cleaner way of waiting for the Main Window thread to update the src_filename variable
+	while(!src_filename){}
 
 	// Open video file and allocate format context
 	vid_fmt_ctx = avformat_alloc_context();
@@ -643,11 +669,10 @@ int main (int argc,char **argv){
 
 	pthread_create(&video_decode, NULL, (void *)Video_Processing_thd, NULL);
 	pthread_create(&audio_decode, NULL, (void *)Audio_Processing_thd, NULL);
-	pthread_create(&full_display, NULL, (void *)Full_Display, NULL);
 
 	pthread_join(video_decode, NULL);
 	pthread_join(audio_decode, NULL);
-	pthread_join(full_display, NULL);
+	pthread_join(main_window, NULL);
 
 	pthread_mutex_destroy(&mutex);
 
