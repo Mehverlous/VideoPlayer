@@ -12,9 +12,6 @@ set(ENV{PKG_CONFIG_PATH} "C:/Users/David/Documents/DevProjects/msys64/mingw64/li
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK4 REQUIRED gtk4)
 
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
-
 include_directories(${GTK4_INCLUDE_DIRS})
 link_directories(${GTK4_LIBRARY_DIRS})
 add_definitions(${GTK4_CFLAGS_OTHER})
@@ -37,13 +34,9 @@ find_library(AVDEVICE_LIBRARY avdevice)
 find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h)
 find_library(SWSCALE_LIBRARY swscale)
 
-# find_path(GTK3_INCLUDE_DIRS SDL2/SDL.h)
-# find_library(SDL_LIBRARY SDL2)
-
 find_path(GTK3_INCLUDE_DIRS portaudio.h)
 find_library(PORTAUDIO_LIBRARY portaudio)
 
-#add_executable(videoplayer src/AudioFuncTest.c)
 add_executable(videoplayer src/main.c)
 
 
