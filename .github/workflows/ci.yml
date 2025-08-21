@@ -21,7 +21,4 @@ jobs:
             portaudio:p
       - name: CI-Build
         run: |
-          echo 'Running in MSYS2!'
-          pacman -Qs cmake
-          pacman -Qs gtk
-          pacman -Qs portaudio
+          cmake --build build --config Debug --target all -j 12
