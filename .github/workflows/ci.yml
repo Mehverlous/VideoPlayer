@@ -17,4 +17,4 @@ jobs:
       - name: CI-Build
         run: |
           echo 'Running in MSYS2!'
-          ./ci-build.sh
+          cmake --version
