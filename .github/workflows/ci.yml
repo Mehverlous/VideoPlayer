@@ -13,9 +13,10 @@ jobs:
         with:
           msystem: UCRT64
           update: true
-          install: git mingw-w64-ucrt-x86_64-gcc
+          install: >-
+            mingw-w64-x86_64-cmake
+            git mingw-w64-ucrt-x86_64-gcc
       - name: CI-Build
         run: |
           echo 'Running in MSYS2!'
-          pacman -S mingw-w64-x86_64-cmake
           cmake --version
