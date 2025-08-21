@@ -14,8 +14,9 @@ jobs:
           msystem: UCRT64
           update: true
           install: >-
-            mingw-w64-x86_64-cmake
             git mingw-w64-ucrt-x86_64-gcc
+          pacboy: >-
+            cmake:p
       - name: CI-Build
         run: |
           echo 'Running in MSYS2!'
