@@ -17,7 +17,11 @@ jobs:
             git mingw-w64-ucrt-x86_64-gcc
           pacboy: >-
             cmake:p
+            gtk4:p
+            portaudio:p
       - name: CI-Build
         run: |
           echo 'Running in MSYS2!'
-          cmake --version
+          pacman -Qs cmake
+          pacman -Qs gtk
+          pacman -Qs portaudio
