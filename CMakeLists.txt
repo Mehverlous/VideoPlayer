@@ -9,9 +9,9 @@ set(CMAKE_WIN32_EXECUTABLE FALSE)
 # set(GTK3_LIBRARY_DIRS "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib")
 # set(ENV{PKG_CONFIG_PATH} "C:/Users/David/Documents/DevProjects/msys64/mingw64/lib/pkgconfig")
 
-set(GTK3_INCLUDE_DIRS "D:/a/_temp/msys64/ucrt64/include")
-set(GTK3_LIBRARY_DIRS "D:/a/_temp/msys64/ucrt64/lib")
-set(ENV{PKG_CONFIG_PATH} "D:/a/_temp/msys64/ucrt64/lib/pkgconfig")
+set(GTK3_INCLUDE_DIRS "D:/a/_temp/msys64/mingw64/include")
+set(GTK3_LIBRARY_DIRS "D:/a/_temp/msys64/mingw64/lib")
+set(ENV{PKG_CONFIG_PATH} "D:/a/_temp/msys64/mingw64/lib/pkgconfig")
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK4 REQUIRED gtk4)
