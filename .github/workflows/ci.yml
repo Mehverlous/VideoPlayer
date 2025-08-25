@@ -17,6 +17,7 @@ jobs:
             git mingw-w64-ucrt-x86_64-gcc
           pacboy: >-
             cmake:p
+            ffmpeg:p
             gtk4:p
             portaudio:p
       - name: CI-Build
