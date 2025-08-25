@@ -180,6 +180,7 @@ static int decode_video_packet(AVCodecContext *dec, const AVPacket *pkt){
 	return ret;
 }
 
+//TODO: Synchronicity issue with video and audio playback 
 void enqueue_video_buffer(circ_buf_v *b, AVFrame *frame, int iFrame){
 	if(video_buffer_full(b))
 		return;
