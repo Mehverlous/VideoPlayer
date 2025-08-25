@@ -13,8 +13,13 @@ jobs:
         with:
           msystem: UCRT64
           update: true
-          install: git mingw-w64-ucrt-x86_64-gcc
+          install: >-
+            git mingw-w64-ucrt-x86_64-gcc
+          pacboy: >-
+            cmake:p
+            gtk4:p
+            portaudio:p
       - name: CI-Build
         run: |
-          echo 'Running in MSYS2!'
-          ./ci-build.sh
+          cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
