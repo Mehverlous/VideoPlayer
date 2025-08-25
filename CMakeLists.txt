@@ -20,26 +20,26 @@ include_directories(${GTK4_INCLUDE_DIRS})
 link_directories(${GTK4_LIBRARY_DIRS})
 add_definitions(${GTK4_CFLAGS_OTHER})
 
-# find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h)
-# find_library(AVCODEC_LIBRARY avcodec)
+find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h)
+find_library(AVCODEC_LIBRARY avcodec)
 
-# find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h)
-# find_library(AVFORMAT_LIBRARY avformat)
+find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h)
+find_library(AVFORMAT_LIBRARY avformat)
 
-# find_path(AVUTIL_INCLUDE_DIR libavutil/avutil.h)
-# find_library(AVUTIL_LIBRARY avutil)
+find_path(AVUTIL_INCLUDE_DIR libavutil/avutil.h)
+find_library(AVUTIL_LIBRARY avutil)
 
-# find_path(AVUTIL_INCLUDE_DIR libavutil/imgutils.h)
-# find_library(AVUTIL_LIBRARY imgutils)
+find_path(AVUTIL_INCLUDE_DIR libavutil/imgutils.h)
+find_library(AVUTIL_LIBRARY imgutils)
 
-# find_path(AVDEVICE_INCLUDE_DIR libavdevice/avdevice.h)
-# find_library(AVDEVICE_LIBRARY avdevice)
+find_path(AVDEVICE_INCLUDE_DIR libavdevice/avdevice.h)
+find_library(AVDEVICE_LIBRARY avdevice)
 
-# find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h)
-# find_library(SWSCALE_LIBRARY swscale)
+find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h)
+find_library(SWSCALE_LIBRARY swscale)
 
-# find_path(GTK3_INCLUDE_DIRS portaudio.h)
-# find_library(PORTAUDIO_LIBRARY portaudio)
+find_path(GTK3_INCLUDE_DIRS portaudio.h)
+find_library(PORTAUDIO_LIBRARY portaudio)
 
 add_executable(videoplayer src/main.c)
 
